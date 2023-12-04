@@ -1,0 +1,154 @@
+<%-include('../head')-%>
+
+    <%-include('../navbar')-%>
+
+        <%-include('../sidebar')-%>
+
+            <body>
+                <section class="container mt-5">
+                    <div>
+                        <div class="">
+                            <div>
+                                <h2 class="">Products List</h2>
+                            </div>
+                            <div class="d-flex my-3">
+                                <div class="col-10 ml-4 mb-2">
+
+                                    <form class="searchform" action="/admin/searchProduct" method="get">
+                                        <div class="input-group">
+                                            <input list="search_terms" type="text" class="form-control" name="search"
+                                                placeholder="Search Product">
+                                            <button type="submit" class="btn btn-light bg"> <i
+                                                    class="material-icons md-search"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div>
+                                    <a href="/admin/addProduct" class="btn btn-primary rounded">Create
+                                        new</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 col-sm-12 table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="th-sm">Image</th>
+                                        <th class="th-sm">Product name</th>
+                                        <th class="th-sm">Brand</th>
+                                        <th class="th-sm">color</th>
+                                        <th class="th-sm">Size</th>
+                                        <th class="th-sm">Category</th>
+                                        <th class="th-sm">Stock</th>
+                                        <th class="th-sm">Sale Price</th>
+                                        <th>List/Unlist</th>
+                                        <th class="th-sm">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% productList.forEach(element=> { %>
+                                        <tr>
+                                            <td><img src=" <%= element?.primaryImage?.[0]?.path; %>"
+                                                    style="max-width: 75px;max-height: 75px;" alt="Product Image"></td>
+                                            <td>
+                                                <%= element.title %>
+                                            </td>
+                                            <td>
+                                                <%= element.brand %>
+                                            </td>
+                                            <td>
+                                                <%= element.color %>
+                                            </td>
+                                            <td>
+                                                <%= element.size %>
+                                            </td>
+                                            <td>
+                                                <%= element.categoryName?.category_name %>
+                                            </td>
+                                            <td>
+                                                <%= element.quantity %>
+                                            </td>
+                                            <td>
+                                                <%= element.salePrice %>
+                                            </td>
+                                            <td>
+                                                <% if (element.isListed) { %>
+
+                                                    <form action="/admin/unlistProduct/<%- element?._id %>"
+                                                        method="post">
+                                                        <input type="hidden">
+                                                        <button type="submit"
+                                                            class="btn btn-danger unblock-button">Unlist</button>
+                                                    </form>
+
+                                                    <% } else { %>
+                                                        <form action="/admin/listProduct/<%- element?._id %>"
+                                                            method="post">
+                                                            <input type="hidden">
+                                                            <button type="submit"
+                                                                class="btn btn-success block-button">List</button>
+                                                        </form>
+                                                        <% } %>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/editProduct/<%=element._id %>" class="btn ml-2 ">
+                                                    <i class="fas fa-pencil"></i>
+                                                </a>
+                                                <form action="/admin/deleteProduct/<%=element._id %>" method="post"
+                                                    class="d-inline">
+                                                    <input type="hidden">
+                                                    <button type="submit" class="btn ml-2 ">
+                                                        <i class="fas fa-trash-can"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                            </table>
+
+                        </div> <!-- card end// -->
+                    </div>
+                    <!-- pagination -->
+                    <div class="">
+                        <nav aria-label="...">
+                            <%if(locals.totalPages){%>
+                                <ul class="pagination">
+                                    <%if(locals.currentPage> 1){%>
+                                        <li class="page-item">
+                                            <a href="/admin/manageProducts/<%=currentPage - 1 %>"
+                                                class="page-link">Previous</a>
+                                            </form>
+                                        </li>
+                                        <% } %>
+                                            <%for(let i=1;i<=totalPages;i++){%>
+
+
+                                                <li class="page-item">
+                                                    <a href="/admin/manageProducts/<%=i%>" class="page-link <%=locals.currentPage === i ? 'bg-primary text-white':''%>">
+                                                        <%=i%>
+                                                    </a>
+                                                </li>
+
+
+                                                <% } %>
+                                                    <%if(locals.currentPage < locals.totalPages){ %>
+                                                        <li class="page-item">
+                                                            <a href="/admin/manageProducts/<%= currentPage + 1 %>"
+                                                                class="page-link">Next</a>
+
+                                                        </li>
+                                                        <% } %>
+                                </ul>
+                                <% } %>
+                        </nav>
+                    </div>
+                    <!-- /pagination -->
+                </section>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+            </body>
+
+            </html>

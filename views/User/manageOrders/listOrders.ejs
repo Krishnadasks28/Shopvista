@@ -1,0 +1,208 @@
+<%-include('../head')-%>
+
+    <body class="bg-light">
+        <%-include('../partials/navbar')-%>
+            <!--Sidebar-->
+            <%-include('../partials/sidebar')-%>
+                <!--/Sidebar-->
+                <main>
+                    <div class="container-fluid">
+                        <div class="container">
+                            <div class="p-3 p-lg-5 mt-3 mt-lg-2">
+                                <form action="" method="get">
+                                    <div class="col-12 d-flex">
+                                        <div class="col-10">
+                                            <input type="text" class="form-control shadow-sm"
+                                                placeholder="Search your orders here" name="searchOrder">
+                                        </div>
+                                        <div class="col-2">
+                                            <button type="submit" class="btn btn-primary shadow-sm">Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <section>
+                                <div class="ms-0 ms-lg-5">
+                                    <%if(locals.orderedProducts !=null || locals.orderedProducts !=undefined) { %>
+                                        <%orderedProducts.forEach((order)=>{%>
+
+
+                                            <section onclick="toggleSubmit('<%=order._id%>')"
+                                                class="p-2 p-md-4 p-lg-4 shadow-sm border d-flex justify-content-between bg-white mb-3">
+
+                                                <div class="col-8 col-lg-6 col-md-6 row">
+                                                    <div class="col-4 text-center">
+                                                        <img src="<%=order.product.primaryImage[0].path%>"
+                                                            alt="<%=order.product.primaryImage[0].name%>"
+                                                            class="orderImage">
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <h6>
+                                                            <%=order.productName%>
+                                                        </h6>
+                                                        <div class="text-muted">
+                                                            <p class="mb-1">Color: <%=order.product.color%>
+                                                            </p>
+                                                            <p class="mb-2">
+                                                                <%= order.size ? 'size: ' + order.size : '' %>
+                                                            </p>
+
+                                                            <p class="my-0 d-lg-none d-md-none"><i
+                                                                    class="fas fa-indian-rupee sign"></i>
+                                                                <%=order.cartPrice%>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=" col-lg-2 col-md-2 d-none d-lg-block d-md-block">
+                                                    <p><i class="fas fa-indian-rupee sign"></i>
+                                                        <%=order.cartPrice%>
+                                                    </p>
+                                                </div>
+                                                <div class=" col-4">
+                                                    <%if(order.orderStatus=='Cancelled' ){ %>
+                                                        <p class="text-danger">
+                                                            <%=order.orderStatus%>
+                                                        </p>
+                                                        <p> On : <%=order.updatedAt%>
+                                                        </p>
+                                                        <% } else if(order.orderStatus=='Delivered' ){ %>
+                                                            <p class="text-success">
+                                                                <%=order.orderStatus%>
+                                                            </p>
+                                                            <p> On : <%=order.deliverDate.day%>
+                                                                    <%=order.deliverDate.time%>
+                                                            </p>
+                                                            <% } else if(order.orderStatus == 'Processing'){ %>
+                                                                <p class="text-warning">
+                                                                    <%=order.orderStatus%>
+                                                                </p>
+                                                                <p>Your order is confirmed and is in processing.</p>
+                                                                <% } else if(order.orderStatus == "Return Processed"){ %>
+                                                                    <p class="text-primary">
+                                                                        <%=order.orderStatus%>
+                                                                    </p>
+                                                                    <p>You order return has processed.</p>
+                                                                    
+                                                                    <% } %>
+                                                </div>
+                                            </section>
+
+                                            <% }) %>
+
+
+                                                <% } else {%>
+                                                    <div class="container">
+                                                        <div class="shadow border p-4">
+                                                            <h4 class=" text-info">You Have no orders as of
+                                                                now!</h4>
+                                                        </div>
+                                                    </div>
+
+                                                    <% } %>
+                                </div>
+                            </section>
+
+                            <form action="/user/orderDetails" method="get" id="orderForm">
+                                <input type="hidden" id="orderId" name="orderId">
+                            </form>
+
+
+
+                            <!-- pagination -->
+                            <div class="mt-5 ms-5">
+                                <nav aria-label="...">
+                                    <%if(locals.totalPages){%>
+                                        <ul class="pagination">
+                                            <%if(locals.currentPage> 1){%>
+                                                <li class="page-item">
+                                                    <a href="/user/orders/<%=currentPage - 1 %>"
+                                                        class="page-link">Previous</a>
+                                                    </form>
+                                                </li>
+                                                <% } %>
+                                                    <%for(let i=1;i<=totalPages;i++){%>
+
+
+                                                        <li class="page-item">
+                                                            <a href="/user/orders/<%=i%>"
+                                                                class="page-link <%=locals.currentPage === i ? 'bg-primary text-white':''%>">
+                                                                <%=i%>
+                                                            </a>
+                                                        </li>
+
+
+                                                        <% } %>
+                                                            <%if(locals.currentPage < locals.totalPages){ %>
+                                                                <li class="page-item">
+                                                                    <a href="/user/orders/<%= currentPage + 1 %>"
+                                                                        class="page-link">Next</a>
+
+                                                                </li>
+                                                                <% } %>
+                                        </ul>
+                                        <% } %>
+                                </nav>
+                            </div>
+                            <!-- /pagination -->
+                        </div>
+                    </div>
+
+                </main>
+
+
+
+                <style>
+                    .orderImage {
+                        height: 6em;
+                    }
+
+                    .form-control,
+                    .btn {
+                        font-size: large;
+                    }
+
+                    section section:hover {
+                        cursor: pointer;
+                        transform: scale(1.01);
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                        transition: transform 0.3s, box-shadow 0.3s;
+                    }
+
+                    @media all and (max-width : 440px) {
+
+                        p,
+                        h6 {
+                            font-size: xx-small;
+                        }
+
+                        .form-control,
+                        .btn {
+                            font-size: xx-small;
+                        }
+
+                        .orderImage {
+                            height: 3em;
+                        }
+                    }
+                </style>
+
+
+                <script>
+                    function toggleSubmit(orderId) {
+                        let orderForm = document.getElementById('orderForm')
+                        let inputField = document.getElementById('orderId')
+
+                        inputField.value = orderId
+
+                        orderForm.submit()
+                    }
+                </script>
+
+                <script src="/User/script/userSidebar.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+    </body>
+
+    </html>

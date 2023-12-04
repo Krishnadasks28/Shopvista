@@ -1,0 +1,303 @@
+<%-include('../head')-%>
+
+    <body>
+        <%-include('../partials/navbar')-%>
+            <!--Sidebar-->
+            <%-include('../partials/sidebar')-%>
+                <!--/Sidebar-->
+                <main>
+                    <div class="container">
+                        <div class="m-lg-5">
+                            <h5 class=" mb-3 mt-5">Manage Address</h5>
+                            <div class="">
+                                <button class="btn btn-link border col-12 mb-3 p-3"
+                                    style="text-align: left;text-decoration: none;" id="addNewBtn"><i
+                                        class="fas fa-plus me-3"></i>ADD NEW
+                                    ADDRESS</button>
+                            </div>
+                            <!-- Add address section -->
+                            <div class="bg-light border p-3 d-none" id="addAddress">
+
+                                <div>
+                                    <h6 class="text-primary my-3">ADD NEW ADDRESS</h6>
+                                </div>
+                                <div>
+                                    <p id="errMsg" class="text-danger my-3"></p>
+                                </div>
+
+                                <div class="col-lg-8">
+                                    <form action="/user/addAddress" method="post" id="addAddressForm">
+                                        <div class="d-flex gap-4 mb-4">
+                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                placeholder="Name" name="name" required>
+                                            <input type="number" class="form-control form-control-lg fs-6"
+                                                placeholder="10-digit mobile number" name="mobile" required>
+                                        </div>
+                                        <div class="d-flex gap-4 mb-4">
+                                            <input type="number" class="form-control form-control-lg fs-6"
+                                                placeholder="Pincode" name="pincode" required>
+                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                placeholder="Locality" name="locality" required>
+                                        </div>
+                                        <div class="mb-4">
+                                            <textarea class="form-control fs-6" name="address" id="" rows="3"
+                                                placeholder="Address(Area and Street)" required></textarea>
+                                        </div>
+                                        <div class="d-flex gap-4 mb-4">
+                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                placeholder="City/District/Town" name="city" required>
+
+                                            <select class="form-control" id="" name="state" required>
+                                                <option value="" class="text-muted">select....</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Tamilnadu">Tamilnadu</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Kolkata">Kolkata</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex gap-4 mb-4">
+                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                placeholder="Landmark (optional)" name="landmark">
+                                            <input type="number" class="form-control form-control-lg fs-6"
+                                                placeholder="Alternate Phone (optional)" name="alternateMobile">
+                                        </div>
+                                        <div class="mb-4">
+                                            <p class="text-muted">Address Type</p>
+                                            <div class="d-flex">
+                                                <input type="radio" name="addressType" value="Home" id="homeAddress"
+                                                    class="me-2">
+                                                <label for="homeAddress" class="me-3">Home</label>
+                                                <input type="radio" name="addressType" value="Work" id="workAddress"
+                                                    class="me-2">
+                                                <label for="workAddress">Work</label>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button type="submit" class="btn btn-lg btn-primary col-lg-3 "
+                                                id="submitAddNew">Save</button>
+                                            <button type="button" class="btn btn-link ms-4"
+                                                style="text-decoration: none;" id="cancelAddNew">Cancel</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /////Add address section -->
+                            <%if(locals.addresses){ %>
+                                <%addresses.forEach((address)=>{ %>
+                                    <div class="mt-4 border shadow col-12 p-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="lh-lg">
+                                                <button class="border btn btn-sm" disabled>
+                                                    <%=address.addressType%>
+                                                </button>
+                                                <p class="mt-1"><strong class="me-3">
+                                                        <%=address.name%>
+                                                    </strong><strong>
+                                                        <%=address.phone%>
+                                                    </strong><br>
+                                                    <%=address.address%>, <%=address.locality%>, <%=address.city%>,
+                                                                <%address.state%>-<strong>
+                                                                        <%=address.pincode%>
+                                                                    </strong>
+                                                </p>
+                                            </div>
+
+
+                                            <div class="dropstart">
+                                                <button type="button" class="btn" data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><button onclick="editAddress(`<%=JSON.stringify(address)%>`)"
+                                                            class="dropdown-item">Edit</button></li>
+                                                    <li><form action="/user/removeAddress" method="post">
+                                                        <input type="hidden" value="<%=address._id%>" name="addressId">
+                                                        <button type="submit" class="dropdown-item">Remove</button>
+                                                    </form></li>
+                                                    <li><form action="/user/setDefaultAddress" method="post">
+                                                        <input type="hidden" value="<%=address._id%>" name="defaultAddress">
+                                                        <button type="submit" class="dropdown-item">Set As Default</button>
+                                                    </form></li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                                        <% } %>
+
+                                            <!-- Edit address -->
+                                            <div class="bg-light border p-3 mt-5 shadow d-none" id="editAddressDiv">
+
+                                                <div>
+                                                    <h6 class="text-primary my-3">EDIT ADDRESS</h6>
+                                                </div>
+                                                <div>
+                                                    <p id="errMsg" class="text-danger my-3"></p>
+                                                </div>
+
+                                                <div class="col-lg-8">
+                                                    <form action="/user/editAddress" method="post" id="editAddressForm">
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="hidden" id="newAddressId" name="addressId">
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="Name" name="name" id="newName" required>
+                                                            <input type="number"
+                                                                class="form-control form-control-lg fs-6"
+                                                                placeholder="10-digit mobile number" id="newMobile"
+                                                                name="mobile" required>
+                                                        </div>
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="number"
+                                                                class="form-control form-control-lg fs-6"
+                                                                placeholder="Pincode" name="pincode" id="newPincode"
+                                                                required>
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="Locality" name="locality"
+                                                                id="newLocality" required>
+                                                        </div>
+                                                        <div class="mb-4">
+                                                            <textarea class="form-control fs-6" name="address"
+                                                                rows="3" placeholder="Address(Area and Street)"
+                                                                id="newAreaAddress" required></textarea>
+                                                        </div>
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="City/District/Town" name="city"
+                                                                id="newCity" required>
+
+                                                            <select class="form-control" id="newState" name="newState"
+                                                                required>
+                                                                <option value="" class="text-muted">select....</option>
+                                                                <option value="Kerala">Kerala</option>
+                                                                <option value="Tamilnadu">Tamilnadu</option>
+                                                                <option value="Delhi">Delhi</option>
+                                                                <option value="Karnataka">Karnataka</option>
+                                                                <option value="Goa">Goa</option>
+                                                                <option value="Kolkata">Kolkata</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="Landmark (optional)" id="newLandmark"
+                                                                name="landmark">
+                                                            <input type="number"
+                                                                class="form-control form-control-lg fs-6"
+                                                                placeholder="Alternate Phone (optional)"
+                                                                id="newAlternateMobile" name="alternateMobile">
+                                                        </div>
+                                                        <div class="mb-4">
+                                                            <p class="text-muted">Address Type</p>
+                                                            <div class="d-flex">
+                                                                <input type="radio" name="addressType" value="Home"
+                                                                    class="me-2">
+                                                                <label for="homeAddress" class="me-3">Home</label>
+                                                                <input type="radio" name="addressType" value="Work"
+                                                                    class="me-2">
+                                                                <label for="workAddress">Work</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <button type="submit"
+                                                                class="btn btn-lg btn-primary col-lg-3 ">Update</button>
+                                                            <button type="button" class="btn btn-link ms-4"
+                                                                style="text-decoration: none;"  onclick="cancelEdit()">Cancel</button>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <!-- Edit address -->
+                        </div>
+                    </div>
+                </main>
+
+                <script>
+                    let addNewBtn = document.getElementById('addNewBtn')
+                    let addAddressDiv = document.getElementById('addAddress')
+                    let cancelAddNew = document.getElementById('cancelAddNew')
+                    let submitBtn = document.getElementById('submitAddNew')
+                    let addressForm = document.getElementById('addAddressForm')
+                    let errMsg = document.getElementById('errMsg')
+
+                    addNewBtn.addEventListener('click', (e) => {
+                        addAddressDiv.classList.remove('d-none')
+                        addNewBtn.classList.add('d-none')
+                    })
+
+                    cancelAddNew.addEventListener('click', (e) => {
+                        addAddressDiv.classList.add('d-none')
+                        addNewBtn.classList.remove('d-none')
+                    })
+
+                    submitBtn.addEventListener('click', (e) => {
+                        if (!addressForm.checkValidity()) {
+                            e.preventDefault()
+                            addressForm.classList.add('was-validated')
+                            errMsg.innerHTML = "Fill in the required fields."
+                        }
+                    })
+                </script>
+
+                <!-- Edit address script -->
+                <script>
+                    let editSection = document.getElementById('editAddressDiv')
+                    let editForm = document.getElementById('editAddressForm')
+                    let addressId = document.getElementById('newAddressId')
+                    let addressType = editForm.querySelectorAll('input[name="addressType"]')
+                    let name = document.getElementById('newName')
+                    let phone = document.getElementById('newMobile')
+                    let pincode = document.getElementById('newPincode')
+                    let locality = document.getElementById('newLocality')
+                    let areaAddress = document.getElementById('newAreaAddress')
+                    let city = document.getElementById('newCity')
+                    let state = document.getElementById('newState')
+                    let landmark = document.getElementById('newLandmark')
+                    let alternateMobile = document.getElementById('newAlternateMobile')
+
+                    function editAddress(address) {
+                        editSection.classList.remove('d-none')
+                        
+                        try {
+                            // Attempt to parse the string
+                            address = JSON.parse(address);
+                        } catch (error) {
+                            // Handle parsing errors
+                            console.error('Error parsing JSON:', error.message);
+                        }
+                        console.log("Editing address : ", address, typeof address)
+                        addressId.value = address._id
+                        name.value = address.name;
+                        phone.value = address.phone;
+                        pincode.value = address.pincode;
+                        locality.value = address.locality;
+                        areaAddress.value = address.address;
+                        city.value = address.city;
+                        state.value = address.state;
+                        landmark.value = address.landmark;
+                        alternateMobile.value = address.alternatePhone;
+
+                        for (let i = 0; i < addressType.length; i++) {
+                            if (addressType[i].value == address.addressType) {
+                                addressType[i].checked = true
+                                break
+                            }
+                        }
+                    }
+
+                    function cancelEdit(){
+                        editSection.classList.add('d-none')
+                    }
+                </script>
+
+                <script src="/User/script/userSidebar.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+    </body>
+
+    </html>

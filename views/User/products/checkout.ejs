@@ -1,0 +1,564 @@
+<%-include('../head')-%>
+
+    <body class="bg-light">
+        <nav class="navbar navbar-dark navbar-expand-lg" style="background-color: #271d3b;">
+            <div class="container-fluid">
+                <div class="col-lg-3 col-md-2 col-sm-1">
+                    <img class="logo-img" src="/User/images/Logo.png" alt="logoImage">
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="bg-primary p-3 mt-5 mb-1 shadow-sm">
+                        <h6 class="text-white fw-bold mb-0">DELIVERY ADDRESS</h6>
+                    </div>
+                    <%if(locals.defaultAddress){ %>
+                        <div class=" p-3 border shadow-sm col-12 bg-white" id="defaultAddressField">
+                            <div class="d-flex justify-content-between">
+                                <div class="lh-lg">
+
+                                    <p class="font-size"><strong>
+                                            <%=defaultAddress.name%>
+                                        </strong>
+                                        <%=defaultAddress.address%>, <%=defaultAddress.locality%>,
+                                                <%=defaultAddress.city%>,
+                                                    <%=defaultAddress.state%>- <strong>
+                                                            <%=defaultAddress.pincode%>
+                                                        </strong>
+                                    </p>
+                                </div>
+                                <div class="pt-2">
+                                    <button class="btn border text-primary font-size"
+                                        id="changeAddressBtn">Change</button>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                            <!-- change address  -->
+                            <div class="col-12 mt-1 bg-white d-none" id="changeAddressField">
+
+                                <%if(locals.addresses){ %>
+                                    <div>
+                                        <div>
+                                            <form action="/user/setDefaultAddress" method="post">
+                                                <%for(let i=0 ; i< addresses.length ; i++){ %>
+                                                    <div
+                                                        class="border my-2 p-3 shadow-sm d-flex justify-content-between">
+                                                        <div class="me-3 d-flex">
+                                                            <div class="me-4"><input type="radio" name="defaultAddress"
+                                                                    id="address<%=i%>" value="<%=addresses[i]._id%>"
+                                                                    required></div>
+                                                            <label for="address<%=i%>" style="cursor: pointer;">
+                                                                <p><strong>
+                                                                        <%=addresses[i].name%>
+                                                                    </strong>,<br>
+                                                                    <%=addresses[i].address%>,
+                                                                        <%=addresses[i].locality%>,
+                                                                            <%=addresses[i].city%>,
+                                                                                <%=addresses[i].state%>
+                                                                                    -
+                                                                                    <strong>
+                                                                                        <%=addresses[i].pincode%>
+                                                                                    </strong>
+                                                                </p>
+                                                            </label>
+                                                        </div>
+                                                        <div>
+                                                            <button type="button"
+                                                                class="btn bg-none text-primary font-size"
+                                                                onclick="toggleEditSection('<%=i%>')">Edit</button>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                                        <div class="bg-light mb-3">
+                                                            <button class="btn text-white btn-lg fw-bold"
+                                                                style="background-color: rgb(255, 115, 0);font-size: small;">DELIVER
+                                                                HERE</button>
+                                                        </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- edit address -->
+                                    <%for(let i=0 ; i< addresses.length ; i++){ %>
+                                        <div id="editSection<%=i%>" class="d-none">
+                                            <div class="bg-light border p-3">
+
+                                                <div>
+                                                    <h6 class="text-primary my-3">EDIT ADDRESS</h6>
+                                                </div>
+                                                <div>
+                                                    <p class="text-danger my-3"></p>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <form action="/user/editAddress" method="post">
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="Name" value="<%=addresses[i].name%>"
+                                                                name="name" required>
+                                                            <input type="number"
+                                                                class="form-control form-control-lg fs-6"
+                                                                placeholder="10-digit mobile number" name="mobile"
+                                                                value="<%=addresses[i].phone%>" required>
+                                                        </div>
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="number"
+                                                                class="form-control form-control-lg fs-6"
+                                                                placeholder="Pincode" name="pincode"
+                                                                value="<%=addresses[i].pincode%>" required>
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="Locality" name="locality"
+                                                                value="<%=addresses[i].locality%>" required>
+                                                        </div>
+                                                        <div class="mb-4">
+                                                            <textarea class="form-control fs-6" name="address" id=""
+                                                                rows="3" placeholder="Address(Area and Street)"
+                                                                required><%=addresses[i].address%></textarea>
+                                                        </div>
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="City/District/Town" name="city"
+                                                                value="<%=addresses[i].city%>" required>
+
+                                                            <select class="form-control" id="" name="state" required>
+                                                                <option value="<%=addresses[i].state%>"
+                                                                    class="text-muted">
+                                                                    <%=addresses[i].state%>
+                                                                </option>
+                                                                <option value="Kerala">Kerala</option>
+                                                                <option value="Tamilnadu">Tamilnadu</option>
+                                                                <option value="Delhi">Delhi</option>
+                                                                <option value="Karnataka">Karnataka</option>
+                                                                <option value="Goa">Goa</option>
+                                                                <option value="Kolkata">Kolkata</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="d-flex gap-4 mb-4">
+                                                            <input type="text" class="form-control form-control-lg fs-6"
+                                                                placeholder="Landmark (optional)" name="landmark"
+                                                                value="<%=addresses[i].landmark%>">
+                                                            <input type="number"
+                                                                class="form-control form-control-lg fs-6"
+                                                                placeholder="Alternate Phone (optional)"
+                                                                name="alternateMobile"
+                                                                value="<%=addresses[i].alternatePhone%>">
+                                                        </div>
+                                                        <div class="mb-4">
+                                                            <p class="text-muted">Address Type</p>
+                                                            <div class="d-flex">
+                                                                <input type="radio" name="addressType" value="Home"
+                                                                    id="homeAddress<%=i%>" class="me-2">
+                                                                <label for="homeAddress<%=i%>" class="me-3">Home</label>
+                                                                <input type="radio" name="addressType" value="Work"
+                                                                    id="workAddress<%=i%>" class="me-2">
+                                                                <label for="workAddress<%=i%>">Work</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <input type="hidden" value="<%=addresses[i]._id%>"
+                                                                name="addressId">
+                                                            <button type="submit"
+                                                                class="btn btn-lg btn-primary col-lg-3">Save</button>
+                                                            <button type="button" class="btn btn-link ms-4"
+                                                                style="text-decoration: none;"
+                                                                onclick="toggleCancelEdit('<%=i%>')">Cancel</button>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                            <!-- /edit address -->
+                                            <% } %>
+
+                                                <!-- Add new address -->
+                                                <div class="bg-light border p-3 d-none" id="addAddress">
+
+                                                    <div>
+                                                        <h6 class="text-primary my-3">ADD NEW ADDRESS</h6>
+                                                    </div>
+                                                    <div>
+                                                        <p id="errMsg" class="text-danger my-3"></p>
+                                                    </div>
+
+                                                    <div class="col-lg-12">
+                                                        <form action="/user/addAddress" method="post"
+                                                            id="addAddressForm">
+                                                            <div class="d-flex gap-4 mb-4">
+                                                                <input type="text"
+                                                                    class="form-control form-control-lg fs-6"
+                                                                    placeholder="Name" name="name" required>
+                                                                <input type="number"
+                                                                    class="form-control form-control-lg fs-6"
+                                                                    placeholder="10-digit mobile number" name="mobile"
+                                                                    required>
+                                                            </div>
+                                                            <div class="d-flex gap-4 mb-4">
+                                                                <input type="number"
+                                                                    class="form-control form-control-lg fs-6"
+                                                                    placeholder="Pincode" name="pincode" required>
+                                                                <input type="text"
+                                                                    class="form-control form-control-lg fs-6"
+                                                                    placeholder="Locality" name="locality" required>
+                                                            </div>
+                                                            <div class="mb-4">
+                                                                <textarea class="form-control fs-6" name="address" id=""
+                                                                    rows="3" placeholder="Address(Area and Street)"
+                                                                    required></textarea>
+                                                            </div>
+                                                            <div class="d-flex gap-4 mb-4">
+                                                                <input type="text"
+                                                                    class="form-control form-control-lg fs-6"
+                                                                    placeholder="City/District/Town" name="city"
+                                                                    required>
+
+                                                                <select class="form-control" id="" name="state"
+                                                                    required>
+                                                                    <option value="" class="text-muted">select....
+                                                                    </option>
+                                                                    <option value="Kerala">Kerala</option>
+                                                                    <option value="Tamilnadu">Tamilnadu</option>
+                                                                    <option value="Delhi">Delhi</option>
+                                                                    <option value="Karnataka">Karnataka</option>
+                                                                    <option value="Goa">Goa</option>
+                                                                    <option value="Kolkata">Kolkata</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="d-flex gap-4 mb-4">
+                                                                <input type="text"
+                                                                    class="form-control form-control-lg fs-6"
+                                                                    placeholder="Landmark (optional)" name="landmark">
+                                                                <input type="number"
+                                                                    class="form-control form-control-lg fs-6"
+                                                                    placeholder="Alternate Phone (optional)"
+                                                                    name="alternateMobile">
+                                                            </div>
+                                                            <div class="mb-4">
+                                                                <p class="text-muted">Address Type</p>
+                                                                <div class="d-flex">
+                                                                    <input type="radio" name="addressType" value="Home"
+                                                                        id="homeAddress" class="me-2">
+                                                                    <label for="homeAddress" class="me-3">Home</label>
+                                                                    <input type="radio" name="addressType" value="Work"
+                                                                        id="workAddress" class="me-2">
+                                                                    <label for="workAddress">Work</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex">
+                                                                <button type="submit"
+                                                                    class="btn btn-lg font-size btn-primary col-lg-3 "
+                                                                    id="submitAddNew">Save</button>
+                                                                <button type="button" class="btn btn-link ms-4"
+                                                                    style="text-decoration: none;"
+                                                                    id="cancelAddNew">Cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <!-- /Add new address -->
+                            </div>
+                            <div class="">
+                                <button class="btn btn-link border col-12 mt-2 p-3 d-none"
+                                    style="text-align: left;text-decoration: none;" id="addNewBtn"><i
+                                        class="fas fa-plus me-3"></i>ADD NEW ADDRESS</button>
+                            </div>
+                            <!-- ordersummery field -->
+                            <%-include('ordersummery')-%>
+                                <!--/ordersummery field -->
+
+                </div>
+
+                <!-- price details card area -->
+                <div class="col-12 col-lg-4 mt-5">
+                    <div class="card mb-4">
+                        <div class="card-header py-3 bg-white">
+                            <h6 class="mb-0 text-muted fw-bold">PRICE DETAILS</h6>
+                        </div>
+                        <div class="card-body font-size">
+                            <ul class="list-group list-group-flush lh-lg">
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                    Price ( <%=locals.itemsCount%> items)
+                                        <span>
+                                            <i class="fas fa-indian-rupee-sign"></i>
+                                            <%=locals.totalPrice%>
+                                        </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0"
+                                    id="discountAmount">
+
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    Delivery Charges
+                                    <span style="color: green;">Free</span>
+                                </li>
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                    <div>
+                                        <strong>Total Amount</strong>
+                                    </div>
+                                    <span><strong>
+                                            <i class="fas fa-indian-rupee-sign"></i>
+                                            <p id="totalAmount" class="d-inline">
+                                                <%=locals.totalPrice%>
+                                            </p>
+                                        </strong></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <%if(locals.allCoupons){ %>
+                        <div>
+                            <form action="#" id="couponForm">
+                                <h5>Select Coupon</h5>
+                                <div class="my-3">
+
+                                    <select class="form-control" id="coupon" required>
+
+                                        <option value="">Select....</option>
+                                        <%for(let i=0 ; i < allCoupons.length ; i++){ %>
+                                            <option value="<%=allCoupons[i].discount%>">
+                                                <%=allCoupons[i].couponName%>
+                                            </option>
+                                            <% }%>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-danger me-2" id="removeCoupon">Remove</button>
+                                    <button type="submit" class="btn btn-success" id="applyCouponBtn">Apply</button>
+                                </div>
+                            </form>
+                        </div>
+                        <% } %>
+                </div>
+                <!--/price details card area -->
+            </div>
+            <!-- payments field -->
+            <%-include('payments')-%>
+                <!--/payments field -->
+
+        </div>
+
+
+
+
+
+        <!-- change address script -->
+        <script>
+            let changeAddressBtn = document.getElementById('changeAddressBtn')
+            let changeAddressField = document.getElementById('changeAddressField')
+            let defaultAddressField = document.getElementById('defaultAddressField')
+            let addAddressBtn = document.getElementById('addNewBtn')
+            changeAddressBtn.addEventListener('click', (e) => {
+                changeAddressField.classList.remove('d-none')
+                defaultAddressField.classList.add('d-none')
+                addAddressBtn.classList.remove('d-none')
+            })
+        </script>
+        <!-- /change address script -->
+
+        <!-- edit address script -->
+        <script>
+
+            '<%if(locals.addresses){ %>'
+            function toggleEditSection(index) {
+                for (let i = 0; i < '<%=locals.addresses.length%>'; i++) {
+
+                    if (i != index) {
+                        let editSection = document.getElementById('editSection' + i)
+                        editSection.classList.add('d-none')
+                    }
+                }
+                let section = document.getElementById('editSection' + index)
+                let addNewBtn = document.getElementById('addNewBtn')
+                let addAddressDiv = document.getElementById('addAddress')
+                section.classList.remove('d-none')
+                addNewBtn.classList.add('d-none')
+                addAddressDiv.classList.add('d-none')
+            }
+            '<%} else { %>'
+            addAddressBtn.classList.remove('d-none')
+            changeAddressField.classList.remove('d-none')
+            '<% } %>'
+
+
+            function toggleCancelEdit(index) {
+                let addNewBtn = document.getElementById('addNewBtn')
+                let section = document.getElementById('editSection' + index)
+                section.classList.add('d-none')
+                addNewBtn.classList.remove('d-none')
+
+            }
+
+        </script>
+        <!-- /edit address script -->
+
+        <!-- add address script -->
+        <script>
+            let addNewBtn = document.getElementById('addNewBtn')
+            let addAddressDiv = document.getElementById('addAddress')
+            let cancelAddNew = document.getElementById('cancelAddNew')
+            let submitBtn = document.getElementById('submitAddNew')
+            let addressForm = document.getElementById('addAddressForm')
+            let errMsg = document.getElementById('errMsg')
+
+            addAddressBtn.addEventListener('click', (e) => {
+                addAddressDiv.classList.remove('d-none')
+                addNewBtn.classList.add('d-none')
+            })
+
+            cancelAddNew.addEventListener('click', (e) => {
+                addAddressDiv.classList.add('d-none')
+                addNewBtn.classList.remove('d-none')
+            })
+
+            submitBtn.addEventListener('click', (e) => {
+                if (!addressForm.checkValidity()) {
+                    e.preventDefault()
+                    addressForm.classList.add('was-validated')
+                    errMsg.innerHTML = "Fill in the required fields."
+                }
+            })
+        </script>
+        <!-- Apply coupon -->
+        <script>
+
+            '<% if (locals.product) { %>'
+            let couponForm = document.getElementById('couponForm');
+            couponForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let totalPrice = parseInt('<%= locals.totalPrice %>')
+                console.log("Total price : ", totalPrice, typeof totalPrice)
+                let selectedCoupon = document.getElementById('coupon');
+
+                ////remove coupon
+                let couponRemover = document.getElementById('removeCoupon')
+                couponRemover.addEventListener('click', (e) => {
+                    selectedCoupon.value = ''
+                    document.getElementById('totalAmount').innerText = totalPrice;
+                    document.getElementById('productPrice').innerText = '<%=locals.product.salePrice%>';
+                    document.getElementById('discountAmount').innerHTML = ''
+                    document.getElementById('couponDiscount').value = ''
+                    document.getElementById('orderPrice').value = totalPrice;
+                    document.getElementById('orderCoupon').value = '';
+                    couponRemover.classList.add('d-none')
+                })
+
+                ////applying coupon
+                if (selectedCoupon.value != '') {
+                    let couponName = selectedCoupon.options[selectedCoupon.selectedIndex].innerText.trim()
+                    console.log("Coupon name : ", couponName)
+                    console.log("coupon discount : ", selectedCoupon.value)
+                    let discount = selectedCoupon.value
+                    let discountPrice = Math.floor((totalPrice * discount) / 100);
+
+                    let newPrice = totalPrice - discountPrice;
+                    document.getElementById('totalAmount').innerText = newPrice;
+                    document.getElementById('productPrice').innerText = newPrice;
+                    document.getElementById('discountAmount').innerHTML = `Discount Amount  <span class="text-danger"> - <i class="fas fa-indian-rupee-sign"></i> ${discountPrice}</span>`;
+                    document.getElementById('couponDiscount').value = discountPrice
+                    document.getElementById('orderPrice').value = newPrice;
+                    document.getElementById('orderCoupon').value = couponName;
+                    couponRemover.classList.remove('d-none')
+                }
+
+            });
+            '<% } %>'
+        </script>
+
+        <!-- payments -->
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            let orderConfirmForm = document.getElementById('orderConfirmForm')
+            let confirmOrderBtn = document.getElementById('confirmOrder')
+            let onlinePaymentBtn = document.getElementById('payOnline')
+            document.getElementById('cashOnDelivery').addEventListener('click', (e) => {
+                confirmOrderBtn.classList.remove('d-none')
+                onlinePaymentBtn.classList.add('d-none')
+                document.getElementById('paymentStatus').value = "Pending"
+            })
+
+            if (document.getElementById('walletPayment')) {
+                document.getElementById('walletPayment').addEventListener('click', (e) => {
+                    confirmOrderBtn.classList.remove('d-none')
+                    onlinePaymentBtn.classList.add('d-none')
+                    document.getElementById('paymentStatus').value = "Completed"
+                })
+            }
+
+
+            document.getElementById('onlinePayment').addEventListener('click', (e) => {
+                onlinePaymentBtn.classList.remove('d-none')
+                confirmOrderBtn.classList.add('d-none')
+            })
+
+            onlinePaymentBtn.addEventListener('click', async (e) => {
+                let price = document.getElementById('totalAmount').innerText
+                price = parseInt(price)
+                console.log("PRICE : ", price)
+                let productName = '<%=locals.product?locals.product.title:"Cart Items"%>'
+                await fetch('/user/payOnline', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: price
+                    })
+                })
+                    .then(async (response) => {
+                        if (response.status == 200) {
+                            let res = await response.json()
+                            console.log("key id :", res)
+                            var options = {
+                                "key": res.key_id, // Enter the Key ID generated from the Dashboard
+                                "amount": res.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                                "currency": "INR",
+                                "name": productName,
+                                "description": "Test Transaction",
+                                "order_id": res.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                                "handler": function (result) {
+                                    console.log("RESPONSE : ", result.razorpay_payment_id)
+                                    alert("Payment succeeded");
+                                    document.getElementById('paymentStatus').value = "Completed"
+                                    document.getElementById('paymentId').value = result.razorpay_payment_id
+                                    orderConfirmForm.submit()
+                                },
+                                "prefill": {
+                                    "name": res.name,
+                                    "email": res.email,
+                                    "contact": res.mobile
+                                },
+                                "theme": {
+                                    "color": "#3399cc"
+                                }
+                            };
+
+                            var razorpay = new Razorpay(options)
+                            razorpay.open()
+                            razorpay.on('payment.failed', (res) => {
+                                alert("payment failed")
+                            })
+                        }
+                        else {
+                            alert("Online payment failed.")
+                        }
+                    })
+                    .catch((err) => console.log("error in online payment ", err))
+
+            })
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    </body>
+
+    </html>

@@ -1,0 +1,77 @@
+<%-include('../head')-%>
+
+    <body class="bg-light">
+        <!-- navbar -->
+        <%-include('../partials/navbar')-%>
+            <!-- /navbar -->
+            <!--Sidebar-->
+            <%-include('../partials/sidebar')-%>
+                <!--/Sidebar-->
+                <div class="container">
+                    <div class="p-4 bg-whtie">
+                        <h5>My Wishlist</h5>
+                        <hr>
+                       <%if(locals.wishlists != ''){ %>
+                        <%wishlists.forEach((item)=> { %>
+                            <div class="card shadow-sm mb-3" onclick="getProductDetails('<%=item.product._id%>')" style="cursor: pointer;">
+                                <div class="d-flex card-body">
+                                    <div class="col-lg-2 col-3 text-center">
+                                        <img src="<%=item.product.primaryImage[0].path%>" alt="" class="primaryImg">
+                                    </div>
+                                    <div class=" col-lg-9 col-7 ms-4">
+                                        <h5 class=""><%=item.productName%></h5>
+                                        <p class="d-none d-lg-block"><%=item.product.description%></p>
+                                        <span class="rating p-2 text-white rounded"><%=item.topRating%> <i class="fas fa-star fa-sm"></i></span>
+                                        <p class="d-inline text-muted">(<%=item.totalReviews%>)</p>
+                                        <div class="d-lg-flex gap-2 mt-4">
+                                            <p class="mb-1 me-2" style="font-size: large;">
+                                                <i class="fas fa-indian-rupee-sign"></i>
+                                                 <%=item.product.salePrice%>
+                                                
+                                            </p>
+                                            <p class="mb-2 mt-1 text-muted">
+                                                <small><del><i class="fas fa-indian-rupee-sign fa-sm"></i> <%=item.product.productPrice%></del></small>
+                                            </p>
+                                        </div>                                  
+                                    </div>
+    
+                                    <div class="mt-2 d-flex col-1 justify-content-end d-lg-block">
+    
+                                        <div>
+                                            <form action="/user/removeFromWishlist" method="post">
+                                                <input type="hidden" value="<%=item.product._id%>" name="productId">
+                                                <button type="submit" class="btn text-muted btn-lg"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+
+
+                <style>
+
+                    .primaryImg{
+                        height: 7em;
+                    }
+                </style>
+
+                <script>
+                    function getProductDetails(productId){
+                        let a = document.createElement('a')
+                        a.href = `/user/productDetails?productId=${productId}`
+                        a.click()
+                    }
+                </script>
+
+                <script src="/User/script/userSidebar.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+    </body>
+
+    </html>

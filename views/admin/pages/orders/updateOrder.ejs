@@ -1,0 +1,167 @@
+<%-include('../head')-%>
+
+    <%-include('../navbar')-%>
+
+        <body class="bg-light">
+            <div class="container">
+
+                <!-- ////////////////////////////////////////////// -->
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">
+
+                        <div class="card mt-5">
+                            <div class="card-header bg-primary text-white py-3">
+                                <h4 class="mb-0">654135452415</h4>
+                            </div>
+                            <div class="card-body mt-2">
+                                <div class=" row justify-content-start">
+                                    <div class="col-lg-5 col-6">
+                                        <h6 class="card-subtitle mb-2 text-muted">Customer Information</h6>
+                                        <p>
+                                            <strong>Name : </strong> <%=locals.order.userName%>
+                                        </p>
+                                        <p>
+                                            <strong>Email : </strong><a href="#"><%=locals.order.userId.email%></a>
+                                        </p>
+                                        <p><strong>Address : </strong><%=locals.order.shippingAddress.address%>, <%=locals.order.shippingAddress.landmark%>, <%=locals.order.shippingAddress.locality%>, <%=locals.order.shippingAddress.city%>, 
+                                            <%=locals.order.shippingAddress.state%>, <%=locals.order.shippingAddress.pincode%>
+                                        </p>
+                                        <p><strong>Phone : </strong><%=locals.order.shippingAddress.phone%></p>
+                                        <%if(locals.order.shippingAddress.alternatePhone){ %>
+                                            <p><strong>Alternate Phone : </strong><%=locals.order.shippingAddress.alternatePhone%></p>
+                                            
+                                            <% } %>
+                                    </div>
+
+                                    <div class="col-lg-3 col-6">
+                                        <h6 class="card-subtitle mb-2 text-muted">Payment Information</h6>
+                                        <p><strong>Payment Method : </strong> <%=locals.order.paymentMethod%></p>
+                                        <p><strong>Payment Status : </strong> <%=locals.order.paymentStatus%></p>
+                                        <%if(locals.order.paymentMethod == 'Online'){ %>
+                                            
+                                            <p><strong>Payment ID : </strong><%=locals.order.paymentId%> </p>
+                                            <% } %>
+
+                                        <!-- coupan and discount -->
+
+                                    </div>
+
+                                    <div class="col-lg-3 col-12">
+                                        <h6 class="card-subtitle mb-2 text-muted">Other Information</h6>
+                                        <%if(locals.order.couponUsed){ %>
+                                            <p><strong>Coupon Used : </strong><%=locals.order.couponUsed%> </p>
+                                            <p><strong>Discount : </strong><i class="fas fa-indian-rupee-sign fa-xs"><%=locals.order.discount%></i>
+                                            520</p>
+                                            <% } %>
+                                        <p><strong>Total Amount: </strong><i class="fas fa-indian-rupee-sign fa-xs"></i>
+                                            <%=locals.order.cartPrice%></p>
+
+
+                                        <!-- wallet -->
+                                    </div>
+
+                                </div>
+
+
+
+                                <hr class="border-1 bg-dark" />
+
+                                <!-- Product  -->
+
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 col-12">
+                                        <h5 class="text-muted mt-4 mb-3">Product Details</h5>
+                                        <div class="row">
+                                            <div class="col-lg-5 col-4">
+                                                <small>
+                                                    <%= %>
+                                                </small>
+                                                <img src="<%=locals.order.product.primaryImage[0].path%>"
+                                                    alt="Product 1" class="img-fluid img-thumbnail" />
+                                            </div>
+                                            <div class="col-lg-6 col-8">
+                                                <p><strong>Product : </strong> <%=locals.order.productName%></p>
+                                                <p><strong>Category : </strong> <%=locals.order.product.categoryName.category_name%></p>
+                                                <p class="text-warning"><strong class="text-dark">Order Status: </strong>
+                                                    <%=locals.order.orderStatus%></p>
+                                                <p><strong>Quantity : </strong> <%=locals.order.quantity%></p>
+                                                <%if(locals.order.size){ %>
+                                                    <p><strong>Size : </strong> <%=locals.order.size%></p>
+                                                    <% } %>
+                                                <p><strong>Price : </strong><i class="fas fa-indian-rupee-sign fa-xs"></i>
+                                                    <%=locals.order.productPrice%>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-12">
+                                        <div class="">
+                                            <h5 class="text-muted mt-4 mb-3">Update Order Status</h5>
+                                        </div>
+                                        <div class=" mb-5 bg-white font-size">
+                                            <form action="/admin/updateOrderChanges" method="post">
+                                                <input type="hidden" value="<%=order._id%>" name="orderId">
+                                                <div>
+                                                    <label for="paymentStatus">Payment Status :</label>
+
+                                                    <select class="form-control mb-3 mt-2 font-size" name="paymentStatus"
+                                                        id="paymentStatus" required>
+                                                        <option value="<%=order.paymentStatus%>">
+                                                            <%=order.paymentStatus%>
+                                                        </option>
+                                                        <%if(locals.order.paymentStatus=='Pending' ){%>
+                                                            <option value="Completed">Completed</option>
+                                                            <% } else { %>
+                                                                <option value="Pending">Pending</option>
+                                                                <% } %>
+                                                    </select>
+
+                                                    <label for="shippingStatus">Shipping Status :</label>
+                                                    <select class="form-control mb-3 mt-2 font-size" name="shippingStatus"
+                                                        id="shippingStatus" required>
+                                                        <option value="<%=order.shippingStatus%>">
+                                                            <%=order.shippingStatus%>
+                                                        </option>
+                                                        <%if(locals.order.shippingStatus=='In Transit' ){%>
+                                                            <option value="Shipped">Shipped</option>
+                                                            <% } else { %>
+                                                                <option value="In Transit">In Transit</option>
+                                                                <% } %>
+                                                    </select>
+
+                                                    <label for="orderStatus">Order Status :</label>
+                                                    <select class="form-control mb-3 mt-2 font-size" name="orderStatus" required>
+                                                        <option value="<%=order.orderStatus%>">
+                                                            <%=order.orderStatus%>
+                                                        </option>
+                                                        <%if(locals.order.orderStatus=='Processing' ){%>
+                                                            <option value="Cancelled">Cancelled</option>
+                                                            <option value="Delivered">Delivered</option>
+                                                            <% } else if(locals.order.orderStatus=='Delivered' ) { %>
+                                                                <option value="Processing">Processing</option>
+                                                                <% } %>
+                                                    </select>
+                                                    <button type="submit" class="btn btn-secondary">Update
+                                                        Changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <!-- Product End -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ////////////////////////////////////////////// -->
+
+            </div>
+        </body>
+
+        </html>

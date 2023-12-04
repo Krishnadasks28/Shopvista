@@ -1,0 +1,67 @@
+<section>
+    <!-- Sidebar -->
+
+    <button class="btn m-lg-3 d-lg-none" id="toggleSidebarBtn"><i class="fa-solid fa-bars"></i>
+        <h4 class="d-inline ms-2 d-none d-lg-inline-block"> <i class="fas fa-circle-user mt-2"></i>
+            <%=locals.username? username:"User";%>
+        </h4>
+    </button>
+
+    <nav id="sidebarMenu" class="sidebar bg-white border shadow col-10 col-lg-2 col-md-5">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+
+                <div class="d-flex border mb-2">
+                    <button id="sidebarClose" class="btn w-25 mb-1"><i class="fa-solid fa-bars"></i></button>
+                    <h4> <i class="fas fa-circle-user mt-2"></i>
+                        <%=locals.username? username:"User";%>
+                    </h4>
+
+                </div>
+                
+                <a href="/user/wallet" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+                    <i class="fas fa-wallet me-3"></i><span>Wallet : <i class=" ms-1 fas fa-indian-rupee-sign fa-xs"></i> <%=locals.wallet%></span>
+                </a>
+                
+                <a href="/user/orders/1" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+                    <i class="fas fa-box me-3"></i><span>My Orders</span>
+                </a>
+                <a href="/user/profile" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user me-3"></i><span>Personal informations</span>
+                </a>
+                <a href="/user/manageAddress" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-address-card me-3"></i><span>Manage Address</span>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
+                        class="fas fa-tag me-3"></i><span>My coupons</span></a>
+                <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-star me-3"></i><span>My reviews & ratings</span>
+                </a>
+                <a href="/user/wishlist" class="list-group-item list-group-item-action py-2 ripple"><i
+                        class="fas fa-heart fa-fw me-3"></i><span>My wishlist</span></a>
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->   
+
+    <style>
+        .sidebar {
+            position: fixed;
+            height: 100%;
+            left: -350px;
+            transition: left 0.3s ease;
+            z-index: 2;
+        }
+
+        #toggleSidebarBtn {
+            position: absolute;
+            z-index: 3;
+        }
+
+        @media (min-width: 870px) {
+            .sidebar {
+                left: 0;
+            }
+        }
+    </style>
+</section>

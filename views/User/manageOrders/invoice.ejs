@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        invoice
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/User/css/user.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body class="bg-light">
+
+
+    <div class="card">
+        <div class="card-body">
+            <div class="container mb-5 mt-3">
+                <div class="row d-flex align-items-baseline">
+                    <div class="col-xl-9">
+                        <p style="color: #7e8d9f;font-size: 20px;">Invoice >> <strong>ORD: <%=product._id%></strong></p>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="container">
+                    <div class="col-md-12 my-5">
+                        <div class="text-center">
+                            <img src="/User/images/Logo.png" class="logo-img" alt="">
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-7">
+                            <ul class="list-unstyled">
+                                <li class="text-muted">To: <span style="color:#5d9fc5 ;">
+                                        <%=shippingAddress.name%>
+                                    </span></li>
+                                <li class="text-muted">
+                                    <%=shippingAddress.address%>
+                                </li>
+                                <li class="text-muted">
+                                    <%=shippingAddress.locality%>
+                                </li>
+                                <li class="text-muted">
+                                    <%=shippingAddress.city%>
+                                </li>
+                                <li class="text-muted">
+                                    <%=shippingAddress.state%>
+                                </li>
+                                <li class="text-muted"><i class="fas fa-phone"></i>
+                                    <%=shippingAddress.phone%>, <%=shippingAddress.alternatePhone%>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-5">
+                            <ul class="list-unstyled">
+                                <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i>
+                                    <span class="fw-bold mb-0">ID:</span>
+                                    <%=product._id%>
+                                </li>
+                                <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i>
+                                    <span class="fw-bold">Creation Date: </span>
+                                    <%=product.orderDate%>
+                                </li>
+                                <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i>
+                                    <span class="me-1 fw-bold">Status:</span><span
+                                        class="badge bg-warning text-black fw-bold">
+                                        Unpaid</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="my-2 mx-1">
+                        <h5 class="fw-bold">Product Details</h5>
+                        <h6>Product Name : <span class="text-info"><%=product.productName%></span>
+                        </h6>
+                        <p class="text-muted mb-1">Quantity : <%=product.quantity%>
+                        </p>
+                        <p class="text-muted mb-1">About Product : <%=product.product.description%>
+                        </p>
+                        <p class="text-muted mb-1">Color : <%=product.product.color%>
+                        </p>
+                        <p class="text-muted mb-1">Size : <%=product.product.size%>
+                        </p>
+                        <p class="text-muted mb-1">Price of One : <i class="fas fa-indian-rupee-sign fs-small" style="font-size: small;"></i>
+                            <%=product.productPrice%>
+                        </p>
+                        <p class="text-muted mb-1">Order Number : <%=product.orderNumber%>
+                        </p>
+                        <p class="text-muted mb-1">Order Date : <%=orderDate.day%>
+                        </p>
+                        <p class="text-muted mb-1">Order Time : <%=orderDate.time%>
+                        </p>
+                        <p class="text-muted mb-1">Order Status : <%=product.orderStatus%>
+                        </p>
+                        <p class="text-muted mb-1">Payment Status : <%=product.paymentStatus%>
+                        </p>
+                        <p class="text-muted mb-1">Payment Method : <%=product.paymentMethod%>
+                        </p>
+                        <%if(locals.product.orderStatus == "Cancelled"){ %>
+                                <%if(locals.product.refundStatus){%>
+                                    <p class="text-muted mb-1">Refund Status : <%=locals.product.refundStatus%></p>
+                                    <%if(locals.product.refundId){ %>
+                                        
+                                        <p class="text-muted mb-1">Refund Id : <%=locals.product.refundId%></p>
+                                        <% } %>
+                                    <% } %> 
+                            <% } %>
+                        <p class="text-muted mb-1">Shipping Status : <%=product.shippingStatus%>
+                        </p>
+                    </div>
+                    <div>
+                        <h6>Payment information</h6>
+                        <div>
+                            <ul class="list-unstyled">
+                                <li class="text-muted"><span class="text-black me-4">Product Total :</span><i class="fas fa-indian-rupee-sign fs-small" style="font-size: small;"></i> <%=product.cartPrice%>
+                                </li>
+                                <li class="text-muted mt-1"><span class="text-black me-4">Delivery Charges :</span><span class="text-success">Free</span></li>
+                            </ul>
+                            <div class="d-flex">
+                                <h6 class="me-4 mt-2">Total Amount : </h6>
+                                <p class="fs-5"><i class="fas fa-indian-rupee-sign" style="font-size: small;"></i> <%=product.cartPrice%>/-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div>
+                        <div>
+                            <p>Thank you for your purchase</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

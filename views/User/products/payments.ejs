@@ -1,0 +1,51 @@
+<%if(locals.defaultAddress){ %>
+    <div class="col-12 col-lg-8 bg-white mb-5" id="changeAddressField">
+        <div class="bg-primary p-3">
+            <h6 class="text-white fw-bold mb-0">PAYMENT OPTION</h6>
+        </div>
+        <form action="/user/confirmOrder" method="post" id="orderConfirmForm">
+            <div>
+                <% if (locals.cartItems) { %>
+                    <input type="hidden" value="<%= locals.cartItems %>" name="cartItems">
+                    <input type="hidden" value="<%= locals.totalPrice %>" name="totalPrice">
+                    <% } else if (locals.product) { %>
+                        <input type="hidden" value="<%= locals.product._id %>" name="productId">
+                        <input type="hidden" value="<%= locals.totalPrice%>" id="orderPrice" name="totalPrice">
+                        <input type="hidden" value="<%= locals.itemsCount%>" name="productQuantity">
+                        <input type="hidden" value="<%= locals.productSize%>" name="productSize">
+                        <input type="hidden" value="" id="orderCoupon" name="appliedCoupon">
+                        <input type="hidden" value="" id="couponDiscount" name="discountPrice">
+                        <% } %>
+                        <input type="hidden" value="Pending" name="paymentStatus" id="paymentStatus">
+                        <input type="hidden" value="" name="paymentId" id="paymentId">
+            </div>
+
+            <div class="border my-2 p-3 shadow-sm">
+                <div class="d-flex">
+                    <input type="radio" name="paymentMethod" id="onlinePayment" value="Online">
+                    <label for="onlinePayment" class="ms-3 w-100" style="cursor: pointer;">Pay Online</label>
+                </div>
+                <div class="mt-3 ms-4">
+                    <button type="button" class="btn font-size text-white fw-bold d-none" id="payOnline"
+                        style="background-color: rgb(255, 120, 0);">CONTINUE</button>
+                </div>
+                <hr>
+                <%if(locals.totalPrice <= locals.walletAmount){ %>
+                    <div class="d-flex">
+                        <input type="radio" name="paymentMethod" id="walletPayment" value="Wallet payment">
+                        <label for="walletPayment" class="ms-3 w-100" style="cursor: pointer;">Pay From Wallet</label>
+                    </div>
+                    <hr>
+                    <% } %> 
+                <div class="d-flex">
+                    <input type="radio" name="paymentMethod" id="cashOnDelivery" value="Cash On Delivery">
+                    <label class="ms-3 w-100" for="cashOnDelivery" style="cursor: pointer;">Cash on Delivery</label>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="btn font-size text-white fw-bold d-none" id="confirmOrder"
+                    style="background-color: rgb(255, 120, 0);">CONFIRM ORDER</button>
+            </div>
+        </form>
+    </div>
+    <% } %>

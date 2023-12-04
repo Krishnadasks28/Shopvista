@@ -1,0 +1,53 @@
+<%-include('head')-%>
+
+    <body>
+        <section class="h-100">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-xl-10 ">
+                        <div class="card rounded-3 shadow border">
+                            <div class="row g-0 justify-content-center">
+                                <div class="col-lg-6">
+                                    <div class="card-body p-md-5 mx-md-4">
+
+                                        <div class="text-center">
+                                            <img src="/admin/images/logo.png" style="width: 185px;" alt="logo">
+                                            <h4 class="mt-2 mb-4 pb-1 text-muted">Admin Panel</h4>
+                                        </div>
+                                        
+                                        <form id="admin_login" action="/admin/login" method="post">
+                                            <p>Please login to your account</p>
+                                            <p id="errP" style="color: rgba(255, 0, 0, 0.89);"><%if(locals.errMsg){ %>
+                                                <%=locals.errMsg %>
+                                                <% } %></p>
+                                            <div class="form-outline mb-2">
+                                                <label class="form-label" for="email">Username</label>
+                                                <input type="email" class="form-control"
+                                                    placeholder="Enter email address" id="username" name="email" required>
+                                            </div>
+
+                                            <div class="form-outline mb-2 lh-1">
+                                                <label class="form-label" for="password">Password</label>
+                                                <input type="password" class="form-control" placeholder="Enter Password"
+                                                    id="password" name="password" required>
+                                            </div>
+
+                                            <div class="text-center pt-1 mb-5 pb-1">
+                                                <button class="btn btn-warning w-25 gradient-custom-2 mb-3"
+                                                    type="submit" id="admin_btn">Sign
+                                                    in</button>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+        <script src="/admin/script/login.js"></script>
+    </body>
+
+    </html>

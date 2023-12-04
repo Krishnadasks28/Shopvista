@@ -1,0 +1,52 @@
+  @import url('https://fonts.googleapis.com/css2?family=Gabarito&family=Roboto:wght@300;400&display=swap');
+
+  * {
+      font-family: 'Gabarito', sans-serif;
+  }
+
+  .logo-img{
+    height: 4em;
+}
+
+
+
+.sideMenu::selection{
+    background-color: 00CBF8;
+}
+
+.product-img{
+    height: 6em;
+}
+
+
+@media all and (max-width : 600px) {
+    .logo-img{
+        height: 2em;
+    }
+}
+
+@media all and (max-width : 440px) {
+    .logo-img{
+        height: 2em;
+    }
+    .search-product{
+        width: 150px;
+    }
+
+    p,
+    h6,h5,h4,th,tr,a{
+        font-size: x-small !important;
+    }
+    
+    .btn{
+        font-size: x-small !important; 
+    }
+
+    .font-size {
+        font-size: small;
+    }
+
+    .product-img{
+        height: 4em;
+    }
+}

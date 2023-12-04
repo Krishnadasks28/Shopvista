@@ -1,0 +1,56 @@
+<%-include('../head')-%>
+
+    <%-include('../navbar')-%>
+
+        <%-include('../sidebar')-%>
+
+
+
+            <body>
+                <!-- Add category -->
+                <div class="container mt-5 d-flex justify-content-center">
+                    <div class=" col-12">
+                        <%if(locals.alert){ %>
+                            <p style="color: rgba(255, 0, 0, 0.904);">
+                                <%=locals.alert %>
+                            </p>
+                            <% } %>
+                                <%if(locals.success){ %>
+                                    <p style="color: rgb(21, 209, 223);">
+                                        <%=locals.success %>
+                                    </p>
+                                    <% } %>
+                                        <h1>Add Category</h1>
+
+                                        <form action="/admin/addCategory" method="post" class="lh-lg">
+                                            <div class="form-group col-lg-6 mb-2">
+                                                <label for="categoryName">Category Name</label>
+                                                <input type="text" class="form-control" name="addCategory"
+                                                    id="categoryName" placeholder="Enter category name" required>
+                                            </div>
+                                            <div class="form-group col-lg-6 mb-2">
+                                                <label for="categorydescription">Category description</label>
+                                                <input type="text" class="form-control" name="discription"
+                                                    id="categorydescription" placeholder="Enter category description"
+                                                    required>
+                                            </div>
+
+                                            <div class="form-group col-lg-6 mb-3">
+                                                <label for="list">List</label>
+                                                <input type="radio" name="islisted" value="true" id="list">
+                                                <label for="unlist">Unlist</label>
+                                                <input type="radio" class="" id="unlist" name="islisted" value="false">
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary">Add Category</button>
+                                        </form>
+                    </div>
+                </div>
+                <!-- /Add category -->
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+            </body>
+
+            </html>

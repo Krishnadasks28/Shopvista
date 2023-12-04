@@ -1,0 +1,370 @@
+<%-include('../head')-%>
+
+    <%-include('../navbar')-%>
+
+        <%-include('../sidebar')-%>
+
+            <body>
+                <div class="container mt-5">
+                    <h2 mt-2>Edit Product</h2>
+
+                    <form action="/admin/editProduct/<%=product._id %>" method="post" enctype="multipart/form-data"
+                        id="updateProduct">
+                        <div class="card">
+                            <div class="card-body">
+                                <hr class="mb-4 mt-0">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h6>1. General info</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <p class="text-danger mb-1"></p>
+                                            <label class="form-label">Product title</label>
+                                            <input type="text" placeholder="Type here" value="<%= product.title %>"
+                                                required name="title" class="form-control">
+                                        </div>
+                                        <div class="mb-4">
+                                            <p class="text-danger mb-1"></p>
+                                            <label class="form-label">Description</label>
+                                            <textarea placeholder="Type here" class="form-control" name="description"
+                                                required rows="4"><%= product.description %></textarea>
+                                        </div>
+                                        <div class="mb-4">
+                                            <p class="text-danger mb-1"></p>
+                                            <label class="form-label">Colors</label>
+                                            <input type="text" placeholder="Type here" name="color"
+                                                value="<%= product.color %>" class="form-control" required>
+                                        </div>
+                                        <div class="mb-4">
+                                            <p class="text-danger mb-1"></p>
+                                            <label class="form-label">Brand name</label>
+                                            <input placeholder="Type here" class="form-control"
+                                                value="<%= product.brand %>" name="brand" required>
+                                        </div>
+
+                                    </div> <!-- col.// -->
+                                </div> <!-- row.// -->
+
+                                <hr class="mb-4 mt-0">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h6>2. Category</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <%if(locals.product.categoryName){%>
+                                                <select class="form-select" name="categoryName" id="category" required
+                                                    onchange="updateSize()">
+                                                    <option value="<%= product.categoryName.category_name%>">
+                                                        <%= product.categoryName.category_name %>
+                                                    </option>
+                                                    <% catList.forEach(category=> { %>
+                                                        <option value="<%= category.category_name %>">
+                                                            <%= category.category_name %>
+                                                        </option>
+                                                        <% }) %>
+                                                </select>
+                                                <%} else {%>
+                                                    <select class="form-select" name="categoryName" id="category"
+                                                        onchange="updateSize()" required>
+                                                        <option value="">Select category</option>
+                                                        <% catList.forEach(category=> { %>
+                                                            <option value="<%= category.category_name %>">
+                                                                <%= category.category_name %>
+                                                            </option>
+                                                            <% }) %>
+                                                    </select>
+                                                    <%}%>
+                                        </div>
+
+                                        <div class="mb-4" id="sizeSectionDiv">
+                                            <p class="text-danger mb-1"></p>
+                                            <label class="form-label">Size</label>
+                                            <%if(product.size){ %>
+                                                <%for(let i=0 ; i < product.size.length ; i++){ %>
+                                                    <br>
+                                                    <input type="checkbox" class="form-check-input me-1" checked
+                                                        value="<%=product.size[i]%>" name="size[]" id="size<%=i%>" required>
+                                                    <label for="size<%=i%>">
+                                                        <%=product.size[i]%>
+                                                    </label>
+                                                    <% } %>
+                                                        <% } %>
+                                        </div>
+                                    </div>
+
+
+                                    <hr class="mb-4 mt-0">
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h6>3. Pricing</h6>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="mb-4">
+                                                <p class="text-danger mb-1"></p>
+                                                <label for="Productprice">Product Price</label>
+                                                <input type="number" min="1" placeholder="₹"
+                                                    value="<%= product.productPrice %>" name="productPrice"
+                                                    class="form-control" oninput="checkValue(this)" required>
+                                            </div>
+                                            <div class="mb-4">
+                                                <p class="text-danger mb-1"></p>
+                                                <label for="salePrice">Sale Price</label>
+                                                <input type="number" min="1" placeholder="₹"
+                                                    value="<%= product.salePrice %>" name="salePrice"
+                                                    class="form-control" oninput="checkValue(this)" required>
+                                            </div>
+                                        </div> <!-- col.// -->
+                                    </div> <!-- row.// -->
+
+                                    <hr class="mb-4 mt-0">
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h6>4. Units</h6>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="mb-4">
+                                                <p class="text-danger mb-1"></p>
+                                                <label for="Quantity">Quantity</label>
+                                                <input type="number" min="0" placeholder="No's"
+                                                    value="<%= product.quantity %>" name="quantity" class="form-control"
+                                                   oninput="checkValue(this)" required>
+                                            </div>
+                                        </div> <!-- col.// -->
+                                    </div> <!-- row.// -->
+                                    <hr class="mb-4 mt-0">
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h6>5. Media</h6>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="card p-md-5 p-2 me-md-5">
+                                                <h5>Choose product images </h5>
+                                                <span class="fw-normal mb-4 text-success">file supports only:
+                                                    jpeg,jpg,png,webp</span>
+
+                                                <div class="mb-3">
+                                                    <div class="cropped-image"></div>
+                                                    <label for="formFileMultiple" class="form-label">Select Primary
+                                                        image</label>
+                                                    <p class="text-danger fw-bold imageError"></p>
+                                                    <input class="form-control" type="file"
+                                                        accept=".jpg,.jpeg,.png,.webp,.svg" id="primaryImage">
+
+                                                    <img class="d-none" id="cropped-image" src="" alt="Cropped Image">
+                                                    <input type="hidden" name="imageName" id="imageName">
+                                                </div>
+                                                <div class="modal fade " id="modal" tabindex="-1" role="dialog"
+                                                    aria-labelledby="modalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="modalLabel">Crop image</h5>
+                                                                <button type="button" class="close"
+                                                                    data-bs-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="img-container">
+                                                                    <div class="row">
+                                                                        <div class="col-md-8">
+                                                                            <!--  default image where we will set the src via jquery-->
+                                                                            <img id="image"
+                                                                                style="display: block; max-width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="preview"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="button" class="btn btn-primary"
+                                                                    id="crop">Crop</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- hidden primary -->
+                                                <input type="hidden" name="existingPrimaryImage"
+                                                    value="<%= product.primaryImage[0].name %>" />
+
+                                                <!-- inputs -->
+
+                                                <div class="col-md-6 mt-2 mr-5">
+
+                                                    <img src="<%=product.primaryImage[0].path %>" class="max-size-image"
+                                                        alt="<%=product.primaryImage[0].name %>">
+
+                                                </div>
+
+                                                <span class="fw-bold">Select secondary images <br> <br></span>
+
+                                                <% product.secondaryImages.forEach(image=> { %>
+
+                                                    <img src="<%= image?.path %>" class="max-size-image mb-3"
+                                                        alt="<%= image.name %>" id="secondary_image">
+
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-danger mb-3 mt-4 w-25 deleteImage"
+                                                        data-product-id="<%=product._id%>"
+                                                        data-image-name="<%=image.name%>">Delete</button>
+                                                    <% }); %>
+                                                    <div>
+                                                           <p class="text-danger mb-1"></p>
+                                                            <input type="file" accept=".jpg,.jpeg,.png,.webp,.svg"
+                                                            class="form-control FilUploader" name="secondaryImage"
+                                                            class="mb-3" multiple><br>
+                                                        </div>
+                                            </div>
+                                            <button form="updateProduct" type="submit"
+                                                class="btn btn-primary mb-4 mt-2 " id="updateBtn">Update Product</button>
+                                        </div>
+                    </form>
+                </div>
+                </div>
+                </div>
+
+                <style>
+                    .max-size-image {
+                        max-width: 150px;
+                        max-height: 150px;
+                        width: auto;
+                        height: auto;
+                    }
+                </style>
+
+
+                <!-- Size selection -->
+                <script>
+                    function updateSize() {
+                        console.log("function called..")
+                        let category = document.getElementById('category').value
+                        let sizeSectionDiv = document.getElementById("sizeSectionDiv")
+                        sizeSectionDiv.innerHTML = ''
+                        console.log("Category value : ", category)
+                        let sizes = getSizesForCategory(category)
+                        console.log("Sizes : ", sizes)
+                        let headLabel = document.createElement('h5')
+                        headLabel.appendChild(document.createTextNode("Select Size :"))
+                        headLabel.classList.add('mb-0')
+                        sizeSectionDiv.appendChild(headLabel)
+                        for (let i = 0; i < sizes.length; i++) {
+                            console.log("Looping...")
+                            let checkBox = document.createElement('input')
+                            checkBox.type = "checkbox"
+                            checkBox.name = "size[]"
+                            checkBox.value = sizes[i]
+                            checkBox.classList.add('form-check-input', 'me-2', 'ms-3')
+                            checkBox.id = "size" + i
+                            let label = document.createElement('label')
+                            label.setAttribute("for", checkBox.id)
+                            label.appendChild(document.createTextNode(sizes[i]))
+                            sizeSectionDiv.appendChild(document.createElement('br'))
+                            sizeSectionDiv.appendChild(checkBox)
+                            sizeSectionDiv.appendChild(label)
+                        }
+
+                    }
+
+
+                    function getSizesForCategory(category) {
+                        if (category == "Clothing") {
+                            return ["Small", "Medium", "Large", "XL", "2Xl"]
+                        }
+                        else if (category == "Footwear") {
+                            return ["6", "7", "8", "9", "10"]
+                        }
+                        else {
+                            return []
+                        }
+                    }
+                </script>
+                <!--  -->
+                <script>
+                    var deleteBtn = document.querySelectorAll('.deleteImage')
+
+                    deleteBtn.forEach(async (button) => {
+                        button.addEventListener('click', async (e) => {
+                            console.log("Image delete button clicked");
+                            try {
+                                let imageName = button.getAttribute('data-image-name'); // Use 'button' instead of 'this'
+                                let productId = button.getAttribute('data-product-id'); // Use 'button' instead of 'this'
+                                let image = button.previousElementSibling;
+
+                                const response = await fetch(`/admin/deleteImage/${productId}/${imageName}`, {
+                                    method: "POST",
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ productId }), // Pass an object with productId
+                                });
+
+                                if (response.status === 200) {
+                                    image.style.display = 'none';
+                                    button.style.display = 'none';
+                                } else {
+                                    console.log("Failed to delete image");
+                                }
+                            } catch (err) {
+                                console.log(err);
+                            }
+                        });
+                    });
+
+                    //validating the edit product form
+
+                    let updateForm = document.getElementById('updateProduct');
+                    let updateBtn = document.getElementById('updateBtn');
+                    let inputFields = updateForm.querySelectorAll('input');
+
+                    updateBtn.addEventListener('click', (e) => {
+                        let formIsValid = true;
+                        updateForm.classList.add('was-validated')
+
+                        inputFields.forEach((input) => {
+                            let div = input.parentNode
+                            let p = div.querySelector('p')
+                            if (!input.checkValidity()) {
+                                formIsValid = false;
+                                p.innerText = "* Required field"
+                            } else {
+                                console.log("else field worked")
+                                p.innerText = ''
+                            }
+                        });
+
+                        if (!formIsValid) {
+                            e.preventDefault();
+                        }
+                    });
+
+                    //////
+                    function checkValue(input) {
+                        console.log("function called :")
+                        let inputValue = input.value
+                        let div = input.parentNode
+                        let p = div.querySelector('p')
+                        if (inputValue < 1) {
+                            p.innerText = "Negaitve values are not allowed"
+                        }
+                    }
+                </script>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+                    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="/home/krishnadas/Desktop/shopvista/node_modules/cropperjs/dist/cropper.min.js"
+                    type="module"></script>
+                <script src="/admin/script/imageCropp.js"></script>
+            </body>

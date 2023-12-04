@@ -1,0 +1,306 @@
+<%-include('head')-%>
+
+    <body class="bg-light">
+        <!--Main Navbar -->
+        <%-include('navbar')-%>
+            <!-- /Main Navbar -->
+
+            <!-- Sidebar -->
+            <%-include('sidebar')-%>
+                <!-- /Sidebar -->
+                <div class="container">
+                    <div class="mt-5">
+                        <h4 class="fs-4">Sales Report</h4>
+                        <hr>
+                        <h5 class="mt-5 mb-3">Filter</h5>
+                        <div class="row">
+                            <div class="col-lg-8 col-12 row ">
+                                <div class="col-lg-2 col-3 me-4">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Payment Method
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item"
+                                                    href="/admin/filterSales?payment=Cash On Delivery">Cash On
+                                                    Delivery</a></li>
+                                            <li><a class="dropdown-item"
+                                                    href="/admin/filterSales?payment=Online">Online
+                                                    transaction</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-1 col-2 ms-2 me-lg-5 me-4">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Category
+                                        </button>
+                                        <ul class="dropdown-menu" style="max-height: 300px;overflow-y: auto;">
+                                            <%if(locals.allCategories){ %>
+                                                <%locals.allCategories.forEach((category)=> { %>
+                                                    <li><a href="/admin/filterSales?categoryId=<%=category._id%>"
+                                                            class="dropdown-item">
+                                                            <%=category.category_name%>
+                                                        </a></li>
+
+                                                    <% }) %>
+
+                                                        <% } %>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-3">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Product
+                                        </button>
+                                        <ul class="dropdown-menu" style="max-height: 300px; overflow-y: auto;">
+                                            <%if(locals.allProducts){ %>
+                                                <%locals.allProducts.forEach((product)=>{ %>
+                                                    <li><a href="/admin/filterSales?productId=<%=product._id%>"
+                                                            class="dropdown-item">
+                                                            <%=product.title%>
+                                                        </a></li>
+                                                    <% }) %>
+                                                        <% } %>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-12 mt-2 mt-lg-0 d-lg-flex justify-content-end">
+                                <button id="downloadPDF"
+                                    class="btn btn-primary me-2">Download PDF</button>
+                                <a href="/admin/downloadSalesExcel?ordersList=<%=JSON.stringify(ordersList)%>" class="btn btn-success">Download Excel</a>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12 mt-4">
+                            <h5 class="fs-6">Order Date</h5>
+                            <div class="font-size">
+                                <form class="d-flex" action="/admin/filterSales" method="get">
+                                        <label class="me-2" for="fromDate">From </label>
+                                        <input class="form-control me-4 font-size" type="date" name="fromDate" id="fromDate" required>
+                                        <label class="me-2" for="toDate">To</label>
+                                        <input class="form-control me-4 font-size" type="date" name="toDate" id="toDate" required>
+                                        <button type="submit" class="btn btn-secondary">Find</button>
+                                    </form>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="p-3 bg-white shadow-sm border table-responsive">
+                            <table class="table table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th id="sortByDate" onclick="sortSales('sortByDate')" class="text-dark"
+                                            style="cursor: pointer;"><i class="fa-solid fa-arrow-down"></i> Date </th>
+                                        <th>Order ID</th>
+                                        <th>Buyer</th>
+                                        <th>Product Name</th>
+                                        <th id="sortByQuantity" onclick="sortSales('sortByQuantity')" class="text-dark"
+                                            style="cursor: pointer;"><i class="fa-solid fa-arrow-down"></i> Quantity
+                                        </th>
+                                        <th>Category</th>
+                                        <th>Total price</th>
+                                        <th>Payment Method</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="lh-lg">
+                                    <%if(locals.ordersList !=null){ %>
+                                        <%ordersList.forEach((order)=>{ %>
+                                            <tr>
+                                                <td>
+                                                    <%=order.deliverDate.day%>
+                                                </td>
+                                                <td>
+                                                    <%=order._id%>
+                                                </td>
+                                                <td>
+                                                    <%=order.userName%>
+                                                </td>
+                                                <td>
+                                                    <%=order.productName%>
+                                                </td>
+                                                <td>
+                                                    <%=order.quantity%>
+                                                </td>
+                                                <td>
+                                                    <%=order.product.categoryName.category_name%>
+                                                </td>
+                                                <td>
+                                                    <%=order.cartPrice%>
+                                                </td>
+                                                <td>
+                                                    <%=order.paymentMethod%>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <!-- pagination -->
+                    <div class="mt-4">
+                        <nav aria-label="...">
+                            <%if(locals.totalPages){%>
+                                <ul class="pagination">
+                                    <%if(locals.currentPage> 1){%>
+                                        <li class="page-item">
+                                            <a href="/admin/salesReport/<%=currentPage - 1 %>"
+                                                class="page-link">Previous</a>
+                                            </form>
+                                        </li>
+                                        <% } %>
+                                            <%for(let i=1;i<=totalPages;i++){%>
+
+
+                                                <li class="page-item">
+                                                    <a href="/admin/salesReport/<%=i%>"
+                                                        class="page-link <%=locals.currentPage === i ? 'bg-primary text-white':''%>">
+                                                        <%=i%>
+                                                    </a>
+                                                </li>
+
+
+                                                <% } %>
+                                                    <%if(locals.currentPage < locals.totalPages){ %>
+                                                        <li class="page-item">
+                                                            <a href="/admin/salesReport/<%= currentPage + 1 %>"
+                                                                class="page-link">Next</a>
+
+                                                        </li>
+                                                        <% } %>
+                                </ul>
+                                <% } %>
+                        </nav>
+                    </div>
+                    <!-- /pagination -->
+
+                </div>
+
+                <!-- disabling future date -->
+                <script>
+                    let fromDate = document.getElementById('fromDate')
+                    let toDate = document.getElementById('toDate')
+
+                    let currentDate = new Date().toISOString().split('T')[0]
+                    fromDate.max = currentDate
+                    toDate.max = currentDate
+                </script>
+                <!-- ///// -->
+                <script>
+                    let salesData = '<%=locals.salesData%>'
+                    salesData = salesData.replace(/&#34;/g, '"')
+                    salesData = JSON.parse(salesData)
+                    let tbody = document.querySelector('tbody')
+                    function sortSales(sortId) {
+                        console.log("Sales data : ", salesData)
+                        let sortBtn = document.getElementById(sortId)
+                        let sortSign = sortBtn.querySelector('i')
+
+                        if (sortId == 'sortByDate') {
+                            if (sortSign.classList.contains('fa-arrow-down')) {
+                                console.log("first condition worked")
+                                salesData.sort((a, b) => new Date(b.deliverDate.dateString) - new Date(a.deliverDate.dateString))
+                                sortSign.classList.remove('fa-arrow-down')
+                                sortSign.classList.add('fa-arrow-up')
+                                console.log("sales Data : ", salesData)
+                            }
+                            else {
+                                console.log("Else condition workded")
+                                salesData.sort((a, b) => new Date(a.deliverDate.dateString) - new Date(b.deliverDate.dateString))
+                                sortSign.classList.remove('fa-arrow-up')
+                                sortSign.classList.add('fa-arrow-down')
+                                console.log("sales Data : ", salesData)
+                            }
+                        }
+                        else {
+                            if (sortSign.classList.contains('fa-arrow-down')) {
+                                console.log("first condition worked")
+                                salesData.sort((a, b) => a.quantity - b.quantity)
+                                sortSign.classList.remove('fa-arrow-down')
+                                sortSign.classList.add('fa-arrow-up')
+                                console.log("sales Data : ", salesData)
+                            }
+                            else {
+                                console.log("Else condition workded")
+                                salesData.sort((a, b) => b.quantity - a.quantity)
+                                sortSign.classList.remove('fa-arrow-up')
+                                sortSign.classList.add('fa-arrow-down')
+                                console.log("sales Data : ", salesData)
+                            }
+                        }
+                        tbody.innerHTML = ''
+                        salesData.forEach((item) => {
+                            console.log("item : ", item)
+                            let row = document.createElement('tr')
+                            row.innerHTML =
+                                `<td>${item.deliverDate.day}</td>
+                                <td>${item._id}</td>
+                                <td>${item.userName}</td>
+                                <td>${item.productName}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.product.categoryName.category_name}</td>
+                                <td>${item.cartPrice}</td>
+                                <td>${item.paymentMethod}</td>`
+
+                            tbody.appendChild(row)
+                        })
+
+                    }
+                </script>
+
+                <!-- download script -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.min.js"
+                    integrity="sha512-w3u9q/DeneCSwUDjhiMNibTRh/1i/gScBVp2imNVAMCt6cUHIw6xzhzcPFIaL3Q1EbI2l+nu17q2aLJJLo4ZYg=="
+                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script>
+
+                    document.getElementById('downloadPDF').addEventListener('click',(e)=>{
+                        downloadPDF('<%=JSON.stringify(ordersList)%>')
+                    })
+                    async function downloadPDF(orders) {
+                        console.log("downloadPDF executing...")
+                        orders = decodeEntities(orders)
+
+                       await fetch(`/admin/downloadSalesPdf?ordersList=${encodeURIComponent(orders)}`)
+
+                            .then((response)=>{
+                                return response.text()
+                            })
+                            .then((data) => {
+                                html2pdf(data, {
+                                    margin: 0,
+                                    filename: 'salesReport.pdf',
+                                    image: { type: 'jpeg', quality: 0.98 },
+                                    html2canvas: { scale: 2 },
+                                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                                })
+                            })
+                            .catch((err)=>console.log("Error in pdf :",err))
+
+                            console.log("function end")
+                    }
+
+
+
+                    function decodeEntities(encodedString) {
+                        const parser = new DOMParser();
+                        const dom = parser.parseFromString('<!doctype html><body>' + encodedString, 'text/html');
+                        return dom.body.textContent;
+                    }
+                </script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+    </body>
+
+    </html>

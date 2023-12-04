@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: #ffff;
+}
+
+.search-product {
+    border-top-right-radius: 0%;
+    border-bottom-right-radius: 0%;
+}
+
+.search-btn {
+    border-top-left-radius: 0%;
+    border-bottom-left-radius: 0%;
+}
+
+.logo-img {
+    height: 4em;
+}
+
+.signup-form {
+    width: 100%;
+}
+
+.label {
+    font-size: 14px;
+}
+
+.form-control::placeholder {
+    font-size: small;
+}
+
+
+
+.footer-links {
+    font-size: small;
+    text-decoration: none;
+}
+
+.footer-links:hover {
+    color: rgb(0, 119, 255) !important;
+    text-decoration: underline;
+}
+
+.signup-error {
+    font-size: small;
+    color: #D11124;
+}
+
+.valid {
+    border-color: #198754;
+}
+
+.not-valid {
+    border-color: #D11124;
+}
+
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    display: none;
+}
+
+.cartImage {
+    height: 13em;
+}
+
+.rating{
+    font-size: smaller;
+    background-color: green;
+}
+
+@media all and (max-width : 400px) {
+
+    .primaryImg{
+        height: 10em;
+    }
+
+    p,
+    h6,h5,h4,th,tr,a {
+        font-size: small !important;
+    }
+
+    .font-size {
+        font-size: small;
+    }
+
+    .cartImage {
+        height: 10em;
+    }
+    .logo-img {
+        height: 2em;
+    }
+
+    .rating{
+        font-size: xx-small;
+    }
+}
+
+
+@media all and ( min-width:400px) and  (max-width : 840px) {
+    .primaryImg{
+        height: 20em;
+    }
+    .logo-img {
+        height: 2em;
+    }
+}
+
+@media all and (max-width : 440px) {
+    .logo-img {
+        height: 2em;
+    }
+
+    .search-product {
+        width: 150px;
+    }
+}
+
+@media all and (min-width : 840px) {
+    .navbar {
+        padding-left: 100px;
+    }
+
+    .signup-form {
+        width: 50%;
+    }
+}

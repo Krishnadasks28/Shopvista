@@ -1,0 +1,104 @@
+<%-include('../head')-%>
+
+    <%-include('../navbar')-%>
+
+        <%-include('../sidebar')-%>
+
+            <body>
+                <div class="container">
+                    <div class="mt-5">
+                        <div class="my-3 d-flex justify-content-between">
+                            <div class="col-10">
+                                <form action="" method="get">
+                                    <div class="d-flex">
+                                        <input type="text" class="form-control" placeholder="Search coupons">
+                                        <button class="btn border"><i class="fas fa-magnifying-glass"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div>
+                                <a href="/admin/addCoupon" class="btn btn-warning">Add new coupon</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="bg-primary text-white shadow-sm border">
+                                    <tr>
+                                        <th>Coupon code</th>
+                                        <th>Coupon id</th>
+                                        <th>Status</th>
+                                        <th>Expirey Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <%if(locals.coupons !=null){%>
+                                        <%locals.coupons.forEach((coupon)=>{%>
+                                            <tr class="lh-lg">
+                                                <th class="fw-normal">
+                                                    <%=coupon.couponName%>
+                                                </th>
+                                                <th class="fw-normal">
+                                                    <%=coupon._id%>
+                                                </th>
+                                                <th class="fw-normal">
+                                                    <%=coupon.isExpired==true?'Expired':'Available';%>
+                                                </th>
+                                                <th class="fw-normal">
+                                                    <%=coupon.expiredOn.day%>
+                                                </th>
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                    <!-- pagination -->
+                    <div class="mt-5">
+                        <nav aria-label="...">
+                            <%if(locals.totalPages){%>
+                                <ul class="pagination">
+                                    <%if(locals.currentPage> 1){%>
+                                        <li class="page-item">
+                                            <a href="/admin/manageCoupons/<%=currentPage - 1 %>"
+                                                class="page-link">Previous</a>
+                                            </form>
+                                        </li>
+                                        <% } %>
+                                            <%for(let i=1;i<=totalPages;i++){%>
+
+
+                                                <li class="page-item">
+                                                    <a href="/admin/manageCoupons/<%=i%>"
+                                                        class="page-link <%=locals.currentPage === i ? 'bg-primary text-white':''%>">
+                                                        <%=i%>
+                                                    </a>
+                                                </li>
+
+
+                                                <% } %>
+                                                    <%if(locals.currentPage < locals.totalPages){ %>
+                                                        <li class="page-item">
+                                                            <a href="/admin/manageCoupons/<%= currentPage + 1 %>"
+                                                                class="page-link">Next</a>
+
+                                                        </li>
+                                                        <% } %>
+                                </ul>
+                                <% } %>
+                        </nav>
+                    </div>
+                    <!-- /pagination -->
+
+
+                </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+            </body>
+
+            </html>

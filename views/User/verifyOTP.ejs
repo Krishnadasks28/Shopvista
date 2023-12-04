@@ -1,0 +1,38 @@
+<%-include('head')-%>
+
+    <body>
+        <div class="container text-center d-flex justify-content-center">
+            <div class="col-lg-6 col-md-6 col-sm-12 mt-5">
+                <form class="rounded bg-white shadow p-4">
+                    <div class="mb-3">
+                        <img src="/User/images/Logo.png" alt="logo" class="logo-img">
+                    </div>
+                    <h3 class="text-dark fw-bolder fs-4 mb-2">Log in with OTP</h3>
+
+                    <div class="fw-normal text-muted mb-4">
+                        Enter the verification code we sent to
+                    </div>
+                    <p id="otp_error" class="signup-error"></p>
+                    <div class="text-start mb-2 lh-lg">
+                        <label for="mobile" class="label">Enter your Mobile number</label>
+                        <input type="number" class="form-control" name="mobile" id="otp_mobile">
+                    </div>
+
+                    <div class="text-start mb-2 lh-lg">
+                        <label for="digit" class="label">Enter your 6 digit security code</label>
+                        <input type="number" class="form-control" placeholder="******" name="digit" id="otp_field">
+                    </div>
+
+                    <button type="button" class="btn btn-primary my-3" id="send_otp">Send OTP</button>
+                    <button type="submit" class="btn btn-primary my-3 d-none" id="otp_submit">Submit</button>
+                    <p id="otpCountdown" style="color: #024ded; font-size: small;"></p>
+
+                    <div class="fw-normal text-muted mb-2 d-none" id="resend_div">
+                        Didn’t get the code ? <a href="#" class="text-primary fw-bold text-decoration-none" id="resend_link">Resend</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    <script type="module" src="/User/script/user_login.js"></script>
+    </html>

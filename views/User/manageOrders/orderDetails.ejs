@@ -1,0 +1,551 @@
+<%-include('../head')-%>
+
+    <body class="bg-light">
+        <%-include('../partials/navbar')-%>
+            <!--Sidebar-->
+            <%-include('../partials/sidebar')-%>
+                <!--/Sidebar-->
+
+                <main>
+                    <div class="container mt-5">
+                        <div id="orderDetails">
+                            <div class="p-4 bg-white col-12 ms-lg-5 ms-1 shadow-sm border d-flex">
+                                <div class="col-10">
+                                    <h6 class="fw-bold">Delivery Address</h6>
+                                    <p class="fw-bold mb-1 mt-3">
+                                        <%=address.name%>
+                                    </p>
+                                    <p>
+                                        <%=address.address%>, <%=address.locality%>, <%=address.landmark%>,
+                                                    <%=address.city%>, <%=address.state%>-<strong>
+                                                                <%=address.pincode%>
+                                                            </strong>
+                                    </p>
+                                    <p class="fw-bold mb-1">Phone Number</p>
+                                    <p>
+                                        <%=address.phone%>, <%=address.alternatePhone%>
+                                    </p>
+                                </div>
+                                <%if(product.orderStatus !="Cancelled" ){%>
+                                    <div class="col-2">
+                                        <button class="btn btn-outline-primary">Change</button>
+                                    </div>
+                                    <% } %>
+                            </div>
+
+                            <div class="mt-4 d-lg-flex justify-content-end">
+                                <div>
+                                    <h6 class="fw-bold">ORDER ID: <%=product._id%>
+                                    </h6>
+                                    <p class="text-muted mb-1">Date : <%=orderDate.day%>
+                                    </p>
+                                    <p class="text-muted">Time : <%=orderDate.time%>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-lg-5 p-4 bg-white col-12 ms-lg-5 ms-1 shadow-sm border row">
+                                <div class="col-lg-4 col-12 d-flex">
+                                    <div class="col-lg-4 d-flex justify-content-center me-4">
+                                        <img class="orderImage" src="<%=product.product.primaryImage[0].path%>"
+                                            alt="<%=product.product.primaryImage[0].name%>">
+                                    </div>
+                                    <div>
+                                        <p class=" fw-bold">
+                                            <%=product.productName%>
+                                        </p>
+                                        <p class="text-muted mb-1">Color: <%=product.product.color%>
+                                        </p>
+                                        <p class="text-muted mb-1">
+                                            <%=product.product.size ? 'Size: ' + product.product.size : '' %>
+                                        </p>
+                                        <p class="text-muted mb-1"> Quantity: <%=product.quantity%>
+                                        </p>
+                                        <p class="fw-bold"><i class="fas fa-indian-rupee-sign"></i>
+                                            <%=product.cartPrice%>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-8 col-12">
+                                    <%if(product.orderStatus=="Processing" ){%>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="fw-bold">Your order is yet to be delivered</h6>
+                                                <span class="text-muted small">The Produt Will Be Delivered In a
+                                                    Week.</span>
+                                            </div>
+                                            <div>
+
+                                                <%if(product.paymentStatus == "Completed"){ %>
+                                                    <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#refundModel">Cancel
+                                                    </button>
+                                                    
+                                                    <% } else { %>
+                                                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel</button>
+
+                                                        <!-- Cancel model -->
+                                                        <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Cancel Order</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>Are you sure to cancel the Order?</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                                                        <form action="/user/orderCancel" method="post">
+                                                                            <input type="hidden" value="<%=product._id%>" name="orderId">
+                                                                            <input type="hidden" value="" name="refundId">
+                                                                            <input type="hidden" value="" name="refundStatus">
+                                                                            <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Yes</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- ////Cancel Model -->
+
+                                                        <% } %>
+
+                                                <form action="/user/orderCancel" method="post" id="orderCancelForm">
+                                                    <input type="hidden" value="<%=product._id%>" name="orderId">
+                                                    <input type="hidden" value="" name="refundId" id="refundId">
+                                                    <input type="hidden" value="" name="refundStatus" id="refundStatus">
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <hr class="my-4">
+
+                                        <!--  -->
+                                        <!-- Refund Model -->
+                                        <!--  -->
+                                        <div class="modal fade" id="refundModel" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Refund Money</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>If you are cancelling the order how do you want refund the
+                                                            amount?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            id="addToWallet">Add to Wallet</button>
+                                                        <button type="submit" class="btn btn-primary"
+                                                            id="refundBtn">Refund to Bank </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--  -->
+                                        <!--  -->
+                                        <!--  -->
+
+                                        <p class="text-muted">Status : <span class="text-warning">
+                                                <%=product.orderStatus%>
+                                            </span></p>
+                                        <p class="text-muted">Payment : <span
+                                                class="<%=product.paymentStatus == 'Completed'?'text-success':'text-danger';%>">
+                                                <%=product.paymentStatus%>
+                                            </span></p>
+                                            <p class="text-muted">Order Date : <%=product.orderDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'numeric'})%></p>
+
+                                        <% } else if(product.orderStatus=='Delivered' ){ %>
+
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <p class="text-muted">Status : <span class="text-success">
+                                                            <%=product.orderStatus%>
+                                                        </span></p>
+                                                    <p class="text-muted">Delivered On :
+                                                        <%=product.deliverDate.day%>,
+                                                            <%=product.deliverDate.time%>
+                                                    </p>
+                                                    <p class="text-muted">Payment Method : <%=product.paymentMethod%></p>
+                                                    <%if(product.paymentMethod == 'Online'){ %>
+                                                        <p class="text-muted">PaymentId : <%=product.paymentId%></p>
+                                                        <% } %>
+                                                </div>
+                                                <%if(locals.returnOrder==undefined){ %>
+
+                                                    <div>
+                                                        <div class="alert alert-info d-none" id="alertReturn"></div>
+                                                        <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                                            id="returnOrderBtn" data-bs-target="#returnModel">Return
+                                                        </button>
+
+                                                        <!-- modal for return -->
+                                                        <div class="modal fade" id="returnModel" tabindex="-1"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Why do you want to
+                                                                            return
+                                                                            the product?</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form action="#" class="lh-lg" id="returnForm">
+                                                                            <p class="text-danger"></p>
+                                                                            <input type="radio" id="input1"
+                                                                                value="Wrong product"
+                                                                                name="returnReason" required>
+                                                                            <label for="input1">Wrong Product</label>
+                                                                            <br>
+                                                                            <input type="radio" id="input2"
+                                                                                value="Wrong colour" name="returnReason"
+                                                                                required>
+                                                                            <label for="input2">Wrong Colour</label>
+                                                                            <br>
+                                                                            <input type="radio" id="input3"
+                                                                                value="Other" name="returnReason"
+                                                                                required>
+                                                                            <label for="input3">Other</label>
+                                                                            <input type="hidden" name="productId"
+                                                                                value="<%=product._id%>">
+
+                                                                            <hr>
+                                                                            <h5>How do you want refund your amount?</h5>
+                                                                            <input type="radio" value="addToBank"
+                                                                                name="refundMethod" id="toBank"
+                                                                                required>
+                                                                            <label for="toBank">Refund to
+                                                                                bank</label><br>
+                                                                            <input type="radio" value="addToWallet"
+                                                                                name="refundMethod"
+                                                                                id="toWallet required">
+                                                                            <label for="toWallet">Add to wallet</label>
+
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-bs-dismiss="modal">Cancel</button>
+                                                                        <button type="button" class="btn btn-primary"
+                                                                            onclick="requestReturn(getReturnReason(),getRefundMethod(),'<%=product.product._id%>','<%=product._id%>')">Submit</button>
+                                                                        <button type="button" data-bs-dismiss="modal"
+                                                                            id="dismiss_return_modal"
+                                                                            class="d-none"></button>
+                                                                    </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- ////// -->
+
+                                                        <form action="" method="post">
+                                                            <input type="hidden" value="<%=product._id%>"
+                                                                name="orderId">
+                                                            <input type="hidden" value="" name="refundId" id="refundId">
+                                                            <input type="hidden" value="" name="refundStatus"
+                                                                id="refundStatus">
+                                                        </form>
+                                                    </div>
+
+                                                    <% } else if(locals.returnOrder.returnStatus=='Request Processing'){ %>
+
+                                                        <div class="font-size">
+                                                            <div class="alert alert-info" id="alertReturn">Return Request
+                                                            send <i class="fa-regular fa-circle-check"></i></div>
+                                                        </div>
+
+
+                                                        <% } %>
+                                            </div>
+
+                                            <% } else if(product.orderStatus=='Cancelled' ){ %>
+                                                <p class="text-muted">Your order has been Cancelled.</p>
+                                                <hr>
+                                                <p class="text-muted">Status : <span class="text-danger">
+                                                        <%=product.orderStatus%>
+                                                    </span></p>
+                                                <p class="text-muted">Cancelled On : <%=locals.updatedAt.day%>,
+                                                        <%=locals.updatedAt.time%>
+                                                </p>
+                                                <%if(product.refundStatus){ %>
+                                                    
+                                                    <p class="text-muted">Refund Status : <span class="text-success"><%=product.refundStatus%></span></p>
+                                                    <p class="text-muted">Refund Id : <span>"<%=product.refundId%>"</span></p>
+                                                    <% } %>
+                                                <% } else if(product.orderStatus == 'Return Processed'){ %>
+                                                    <div>
+                                                        <p class="text-muted">Your return request has been accepted.</p>
+                                                    </div>
+                                                    <hr>
+                                                    <div>
+                                                        <p class="text-muted">Status : <span class="text-success">
+                                                                <%=product.orderStatus%>
+                                                            </span></p>
+                                                        <p class="text-muted">On :
+                                                            <%=product.updatedAt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'numeric'})%>
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    <% } %>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-5">
+                            <a id="invoiceDownload" class="btn btn-outline-primary">Download Invoice</a>
+                        </div>
+
+
+                    </div>
+                </main>
+
+
+
+                <style>
+                    .track-line {
+                        height: 2px !important;
+                        background-color: #488978;
+                        opacity: 1;
+                    }
+
+                    .dot {
+                        height: 10px;
+                        width: 10px;
+                        margin-left: 3px;
+                        margin-right: 3px;
+                        margin-top: 0px;
+                        background-color: #488978;
+                        border-radius: 50%;
+                        display: inline-block
+                    }
+
+                    .big-dot {
+                        height: 25px;
+                        width: 25px;
+                        margin-left: 0px;
+                        margin-right: 0px;
+                        margin-top: 0px;
+                        background-color: #488978;
+                        border-radius: 50%;
+                        display: inline-block;
+                    }
+
+                    .big-dot i {
+                        font-size: 12px;
+                    }
+
+                    .card-stepper {
+                        z-index: 0
+                    }
+
+                    .orderImage {
+                        height: 8em;
+                    }
+
+                    @media all and (max-width : 440px) {
+
+                        p,
+                        h6 {
+                            font-size: xx-small;
+                        }
+
+                        .form-control,
+                        .btn {
+                            font-size: xx-small;
+                        }
+
+                        .orderImage {
+                            height: 3em;
+                        }
+                    }
+                </style>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.min.js"
+                    integrity="sha512-w3u9q/DeneCSwUDjhiMNibTRh/1i/gScBVp2imNVAMCt6cUHIw6xzhzcPFIaL3Q1EbI2l+nu17q2aLJJLo4ZYg=="
+                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+                <script>
+
+                    document.getElementById('invoiceDownload').addEventListener('click', (e) => {
+                        downloadInvoice('<%=JSON.stringify(product)%>')
+                    })
+
+                    function downloadInvoice(product) {
+                        console.log('product : ', product)
+                        product = decodeEntities(product)
+                        console.log('product after decodeEntites : ', product)
+
+                        fetch(`/user/downloadInvoice?product=${encodeURIComponent(product)}`)
+                            .then((response) => {
+                                console.log("Response", response)
+                                return response.text()
+                            })
+                            .then((data) => {
+                                console.log("data downloading...")
+                                html2pdf(data, {
+                                    margin: 10,
+                                    filename: 'Order_Invoice.pdf',
+                                    image: { type: 'jpeg', quality: 0.98 },
+                                    html2canvas: { scale: 2 },
+                                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                                });
+                            })
+                            .catch((err) => console.log('pdf error:', err));
+                        console.log("function end")
+                    }
+
+                    function decodeEntities(encodedString) {
+                        const parser = new DOMParser();
+                        const dom = parser.parseFromString('<!doctype html><body>' + encodedString, 'text/html');
+                        return dom.body.textContent;
+                    }
+                </script>
+
+
+                <!-- order Cancelation -->
+                <script>
+                    let orderCancelForm = document.getElementById('orderCancelForm')
+                    let refundBtn = document.getElementById('refundBtn')
+
+                    if (refundBtn) {
+
+                        refundBtn.addEventListener('click', async (e) => {
+                            await fetch('/user/refundToBank', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    paymentId: '<%=product.paymentId%>',
+                                    refundAmount: '<%=product.cartPrice%>'
+                                })
+                            })
+                                .then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                    }
+
+                                    return response.json()
+                                })
+                                .then((refund) => {
+                                    console.log("Refund id : ", refund.id, refund.status)
+                                    document.getElementById('refundId').value = refund.id
+                                    document.getElementById('refundStatus').value = refund.status
+                                    orderCancelForm.submit()
+                                })
+                                .catch((err) => {
+                                    console.log("Error in refundToBank :", err)
+                                })
+                        })
+                    }
+
+                    let addToWallet = document.getElementById('addToWallet')
+
+                    if (addToWallet) {
+                        addToWallet.addEventListener('click', async (e) => {
+                            await fetch('/user/addToWallet', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ 
+                                    refundAmount: '<%=product.cartPrice%>',
+                                    orderId:'<%=product._id%>',
+                                    description:"Amount from order cancellation."
+                                })
+                            })
+                                .then((response) => {
+                                    if (response.status == 200) {
+                                        document.getElementById('refundStatus').value = "Added to wallet"
+                                        orderCancelForm.submit()
+                                    }
+                                    else {
+                                        console.log("Add to wallet failed")
+                                        alert('Refund can not be processed, try again later')
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.log("ERROR in adding to wallet", err)
+                                })
+                        })
+                    }
+                </script>
+
+                <!-- order return -->
+                <script>
+                    /////
+                    function getReturnReason() {
+                        let returnReason = document.querySelector('input[name="returnReason"]:checked')
+                        if (returnReason) {
+                            return returnReason.value
+                        }
+                    }
+                    ////
+
+                    function getRefundMethod() {
+                        let refundMethod = document.querySelector('input[name="refundMethod"]:checked')
+                        if(refundMethod){
+                            return refundMethod.value
+                        }
+                    }
+                    // fetch return request
+                    async function requestReturn(reason, refundMethod, productId, orderId) {
+                        console.log("REason for return :", reason," refundMethod :",refundMethod)
+                        if (reason != undefined && refundMethod != undefined) {
+                            console.log("orderId :", orderId)
+                            let dismissModalBtn = document.getElementById("dismiss_return_modal")
+                            let returnOrderBtn = document.getElementById('returnOrderBtn')
+                            let returnAlert = document.getElementById('alertReturn')
+                            await fetch('/user/requestReturn', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    returnReason: reason,
+                                    productId: productId,
+                                    orderId: orderId,
+                                    refundMethod:refundMethod
+                                })
+                            })
+                                .then((response) => {
+                                    if (response.status == 200) {
+                                        dismissModalBtn.click()
+                                        returnOrderBtn.classList.add('d-none')
+                                        returnAlert.classList.remove('d-none')
+                                        returnAlert.innerHTML = 'Return Request send <i class="fa-regular fa-circle-check"></i>'
+                                        alert("Your request has been processed.We will notifiy you when its done")
+                                    }
+                                    else {
+                                        dismissModalBtn.click()
+                                        alert("Your request can not be processed.Try again later")
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.log("Error in sending return request :", err)
+                                })
+                        }
+                        else {
+                            let returnForm = document.getElementById('returnForm')
+                            returnForm.classList.add('was-validated')
+                            let p = returnForm.querySelector('p')
+                            p.innerText = "Please select required fields to continue."
+                        }
+                    }
+                </script>
+
+                <script src="/User/script/userSidebar.js"></script>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                    crossorigin="anonymous"></script>
+    </body>
+
+    </html>

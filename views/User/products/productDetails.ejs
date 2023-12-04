@@ -1,0 +1,315 @@
+<%-include('../head')-%>
+
+  <body>
+    <!-- navbar -->
+    <%-include('../partials/navbar')-%>
+      <!-- /navbar -->
+
+      <!-- content -->
+      <section class="py-5">
+        <div class="container">
+          <div class="row gx-5">
+            <aside class="col-lg-5">
+              <div class="border rounded-4 mb-3 d-flex justify-content-center">
+                <div class="max-size-image"><img src="<%=product.primaryImage[0].path %>"
+                    class="card-img-top max-size-image" style=" height: 30em;" alt="<%=product.primaryImage[0].name %>">
+                </div>
+              </div>
+              <div class="d-flex justify-content-center mb-3">
+                <%product.secondaryImages.forEach((img)=>{ %>
+
+                  <img width="60" height="60" class="rounded-2" src="<%=img.path%>" />
+                  <% }) %>
+
+
+              </div>
+              <!-- thumbs-wrap.// -->
+              <!-- gallery-wrap .end// -->
+            </aside>
+            <main class="col-lg-6">
+              <div class="ps-lg-3">
+                <h4 class="title text-dark">
+                  <%=product.title%>
+                </h4>
+                <div class="d-flex flex-row my-3">
+                  <%if(locals.ratings !=undefined ){ %>
+                    <div class="text-warning mb-1 me-2">
+                      <%for(let i=1 ; i <=5 ; i++){ %>
+                        <%if( i <=locals.ratings[0]._id){ %>
+                          <i class="fa fa-star"></i>
+                          <% } else { %>
+                            <i class="fa-regular fa-star"></i>
+                            <% } %>
+                              <% } %>
+
+                                <span class="ms-1">
+                                  <%=locals.ratings[0]._id%>
+                                </span>
+                    </div>
+                    <% } %>
+                      <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>
+                        <%=product.quantity%>
+                      </span>
+                      <span class="text-success ms-2">In stock</span>
+                </div>
+
+                <div class="mb-3">
+                  <span class="text-danger"><small><del><i class="fas fa-indian-rupee-sign"
+                          style="font-size: smaller;"></i>
+                        <%=product.productPrice%>
+                      </del></small></span>
+                  <span>/</span>
+                  <span class="text-success"><i class="fas fa-indian-rupee-sign"></i>
+                    <%=product.salePrice%>
+                  </span>
+                </div>
+
+                <p>
+                  <%=product.description%>
+                </p>
+
+                <div class="row">
+
+                  <dt class="col-3">Color</dt>
+                  <dd class="col-9">
+                    <%=product.color%>
+                  </dd>
+
+                  <dt class="col-3">Brand</dt>
+                  <dd class="col-9">
+                    <%=product.brand%>
+                  </dd>
+                </div>
+
+                <hr />
+
+                <div class="row mb-4">
+                  <%if(product.size !='' ){%>
+                    <div class="col-md-4 col-6">
+                      <label class="mb-2">Size</label>
+                      <select class="form-select border border-secondary" id="product-size" style="height: 35px;">
+                        <option value="">Select size</option>
+                        <%product.size.forEach((size)=>{ %>
+                          <option value="<%=size%>">
+                            <%=size%>
+                          </option>
+                          <% }) %>
+                      </select>
+                    </div>
+                    <% } %>
+                      <!-- col.// -->
+                      <div class="col-md-4 col-6 mb-3">
+                        <label class="mb-2 d-block">Quantity</label>
+                        <div class="input-group mb-3" style="width: 170px;">
+                          <button class="btn btn-white border border-secondary px-3" type="button" id="quantity-minus"
+                            data-mdb-ripple-color="dark" onclick="decreaseQuantity()">
+                            <i class="fas fa-minus"></i>
+                          </button>
+                          <input type="number" class="form-control text-center border border-secondary"
+                            placeholder="Quantity" value=1 id="product-quantity">
+                          <button class="btn btn-white border border-secondary px-3" type="button" id="quantity-plus"
+                            data-mdb-ripple-color="dark" onclick="increaseQuantity()">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                </div>
+                <div class="d-flex">
+                  <!-- Load checkOut -->
+                  <div class="me-2">
+                    <form action="/user/checkOutOne" method="get">
+                      <input type="hidden" value="" id="checkOut-quantity" name="checkOutQuantity">
+                      <input type="hidden" value="" id="checkOut-size" name="checkOutSize">
+                      <input type="hidden" value="<%=product._id%>" name="productUniqueId">
+                      <button type="submit" class="btn btn-warning shadow-0" <% if(locals.loggedIn==false){%> disabled
+                        <%}%> > Buy now
+                      </button>
+                    </form>
+                  </div>
+                  <!-- / -->
+                  <!-- Add to cart -->
+                  <div class="me-2">
+                    <form action="/user/addToCart" method="post">
+                      <input type="hidden" value="<%=product._id%>" name="productId">
+                      <input type="hidden" value="<%=product.title%>" name="productName">
+                      <input type="hidden" value="<%=product.salePrice%>" name="productPrice">
+                      <input type="hidden" value="" id="cart-quantity" name="cartQuantity">
+                      <input type="hidden" value="" id="cart-size" name="cartSize">
+                      <%if(locals.alreadyInCart==false){%>
+                        <button type="submit" class="btn btn-primary shadow-0" <% if(locals.loggedIn==false ){%>
+                          disabled <%}%> > <i class="me-1 fa fa-shopping-basket"></i>
+                            Add
+                            to cart
+                        </button>
+                        <% } else{%>
+                          <a href="/user/cart" class="btn btn-warning shadow-0 me-1">Go
+                            to cart</a>
+                          <% } %>
+                    </form>
+                  </div>
+                  <!-- / -->
+
+                  <%if (locals.wishlists !=undefined && locals.wishlists.some(item=>
+                    item._id.toString() == product._id.toString())){ %>
+                    <form action="/user/removeFromWishlist" method="post">
+                      <input type="hidden" value="<%=product._id%>" name="productId">
+                      <button type="submit" class="btn btn-danger border border-secondary py-2 icon-hover px-3" <%
+                        if(locals.loggedIn==false ){%> disabled <%}%> > <i class="me-1 fa fa-heart fa-lg"></i> Save
+                      </button>
+                    </form>
+
+                    <% } else { %>
+                      <form action="/user/moveToWishlist" method="post">
+                        <input type="hidden" value="<%=product._id%>" name="productId">
+                        <input type="hidden" value="<%=product.title%>" name="productName">
+                        <button type="submit" class="btn btn-light border border-secondary py-2 icon-hover px-3" <%
+                          if(locals.loggedIn==false ){%> disabled <%}%> > <i class="me-1 fa fa-heart fa-lg"></i> Save
+                        </button>
+                      </form>
+                      <% } %>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </section>
+      <!-- content -->
+
+
+      <!-- Raings & reviews -->
+      <%-include('review&rating')-%>
+        <!--/Raings & reviews -->
+
+
+        <%if(locals.similarProducts != '' ){ %>
+
+          <section class="bg-light py-4">
+            <div class="container">
+              <div class="row gx-4">
+                <div class="px-0 rounded-2 shadow-0">
+                  <h5>Similar items</h5>
+                  <div class=" row">
+                    <%locals.similarProducts.forEach((item)=>{ %>
+                      <div class="card col-12 col-lg-3 col-md-6">
+                        <div class="card-body">
+
+                          <div class="d-flex mb-3">
+                            <a href="/user/productDetails?productId=<%=item._id%>" class="me-3">
+                              <img src="<%=item.primaryImage[0].path%>" style="min-width: 96px; height: 96px;"
+                                class="img-md img-thumbnail" />
+                            </a>
+                            <div class="info">
+                              <a href="/user/productDetails?productId=<%=item._id%>" class="nav-link mb-1">
+                                <%=item.title%>
+                              </a>
+                              <strong class="text-dark p-3"> <i class="fas fa-indian-rupee-sign "></i>
+                                <%=item.salePrice%>
+                              </strong>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <% }) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <% } %>
+            <!-- Footer -->
+            <footer class="text-center text-lg-start text-muted bg-primary mt-3">
+              <!-- Section: Links  -->
+              <section class="">
+                <div class="container text-center text-md-start pt-4 pb-4">
+                  <!-- Grid row -->
+                  <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-12 col-lg-3 col-sm-12 mb-2">
+                      <!-- Content -->
+                      <a href="#" target="_blank" class="text-white h2" style="text-decoration: none;">
+                        SHOPVISTA
+                      </a>
+                      <p class="mt-1 text-white">
+                        © 2023 Copyright: ShopVista.com
+                      </p>
+                    </div>
+                  </div>
+              </section>
+              <!-- Section: Links  -->
+
+              <div class="">
+                <div class="container">
+                  <div class="d-flex justify-content-between py-4 border-top">
+                    <!--- payment --->
+                    <div>
+                      <i class="fab fa-lg fa-cc-visa text-white"></i>
+                      <i class="fab fa-lg fa-cc-amex text-white"></i>
+                      <i class="fab fa-lg fa-cc-mastercard text-white"></i>
+                      <i class="fab fa-lg fa-cc-paypal text-white"></i>
+                    </div>
+                    <!--- payment --->
+                  </div>
+                </div>
+              </div>
+            </footer>
+            <!-- Footer -->
+
+
+
+
+
+            <script>
+
+              //changing quanitity of the product
+              let quantity = document.getElementById('product-quantity')
+              let quantityMinusBtn = document.getElementById('quantity-minus')
+              let quantityAddBtn = document.getElementById('quantity-plus')
+              function increaseQuantity() {
+                quantityMinusBtn.disabled = false
+                if (quantity.value == '<%=product.quantity%>') {
+                  quantityAddBtn.disabled = true
+                }
+                else {
+                  quantity.value++
+                  quantity.dispatchEvent(new Event('change'))
+                }
+              }
+
+              function decreaseQuantity() {
+                quantityAddBtn.disabled = false
+                if (quantity.value == 1) {
+                  quantityMinusBtn.disabled = true
+                }
+                else {
+                  quantity.value--
+                  quantity.dispatchEvent(new Event('change'))
+
+                }
+              }
+              //
+
+              quantity.addEventListener('change', (e) => {
+                console.log("Quantity : ", quantity.value)
+                let cartQuantity = document.getElementById('cart-quantity')
+                let checkOutQuantity = document.getElementById('checkOut-quantity')
+                cartQuantity.value = quantity.value
+                checkOutQuantity.value = quantity.value
+              })
+
+              let productSize = document.getElementById('product-size')
+              productSize.addEventListener('change', (e) => {
+                let cartSize = document.getElementById('cart-size')
+                let checkOutSize = document.getElementById('checkOut-size')
+
+                cartSize.value = productSize.value
+                checkOutSize.value = productSize.value
+              })
+
+            </script>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+              integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+              crossorigin="anonymous"></script>
+  </body>
+
+  </html>

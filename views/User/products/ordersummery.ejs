@@ -1,0 +1,168 @@
+<div class="row my-4">
+    <div class="col-12 ">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary shadow-sm p-lg-3 p-md-3 p-sm-1">
+                <h6 class="mb-0 text-white fw-bold">ORDER SUMMERY</h6>
+            </div>
+            <div class="card-body">
+                <%if(locals.cartItems){ %>
+                    <!-- Cart items -->
+                    <%cartItems.forEach((item)=>{%>
+                        <div class="row">
+                            <div class="col-lg-3 col-3 mb-4 mb-lg-0">
+                                <!-- Image -->
+                                <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                    data-mdb-ripple-color="light">
+                                    <img src="<%=item.product.primaryImage[0].path %>" class="w-100 cartImage"
+                                        alt="<%=item.product.primaryImage[0].name%>" />
+                                    <a href="#!">
+                                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)">
+                                        </div>
+                                    </a>
+                                </div>
+                                <!-- Image -->
+                            </div>
+
+                            <div class="col-lg-5 col-6 mb-lg-0">
+                                <!-- Data -->
+                                <p class="mb-1"><strong>
+                                        <%=item.product.title%>
+                                    </strong></p>
+                                <p class="text-muted mb-1">
+                                    <strong>
+                                        <%=item.product.brand%>
+                                    </strong>
+                                </p>
+                                <p class="mb-2 d-none d-lg-block" style="font-size: small;">
+                                    <%=item.product.description%>
+                                </p>
+                                <p class="mb-2">
+                                    <%=item.product.color%>
+                                </p>
+                                <p class="mb-2">
+                                    <i class="fas fa-indian-rupee-sign"></i>
+                                    <%=item.product.salePrice%>
+                                </p>
+                                <p class="">
+                                    Quantity : <%=item.quantity%>
+                                </p>
+                                <div class="d-flex">
+                                    <form action="/user/removeFromCart" method="post">
+                                        <input type="hidden" value="<%=item.product._id%>" name="productId">
+                                        <input type="hidden" value="<%=item.product.title%>" name="productName">
+                                        <button type="submit" class="btn btn-danger btn-sm me-1 mb-2"
+                                            data-mdb-toggle="tooltip" title="Remove item">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- Data -->
+                            </div>
+
+                            <div class="col-lg-4 col-3 mb-4 mb-lg-0 ">
+                                <div class="">
+                                    <p class="text-start text-md-center text-success font-size">FREE DELIVERY</p>
+                                    <!-- Price -->
+                                    <p class="text-start text-md-center">
+                                        <strong> <i class="fas fa-indian-rupee-sign"></i>
+                                            <%=item.cartPrice%>
+                                        </strong>
+                                    </p>
+                                    <!-- Price -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mt-2 mb-2" />
+
+                        <% }) %>
+                            <!-- Cart items -->
+                            <!-- single item -->
+                            <% } else if(locals.product){ %>
+                                <div class="row">
+                                    <div class="col-lg-3 col-3 mb-4 mb-lg-0">
+                                        <!-- Image -->
+                                        <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                            data-mdb-ripple-color="light">
+                                            <img src="<%=product.primaryImage[0].path%>" class="w-100" alt="" />
+                                            <a href="#!">
+                                                <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)">
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <!-- /Image -->
+                                    </div>
+
+                                    <div class="col-lg-5 col-6 mb-lg-0">
+                                        <!-- Data -->
+                                        <p class="mb-1"><strong>
+                                                <%=product.title%>
+                                            </strong></p>
+                                        <p class="text-muted mb-1">
+                                            <strong>
+                                                <%=product.brand%>
+                                            </strong>
+                                        </p>
+                                        <p class="mb-2 d-none d-lg-block" style="font-size: small;">
+                                            <%=product.description%>
+                                        </p>
+                                        <p class="mb-2">
+                                            <%=product.color%>
+                                        </p>
+                                        <%if(locals.productSize != undefined){ %>
+                                            <p class="">
+                                               Size : <%=locals.productSize%>
+                                            </p>
+
+                                            <% } %>
+                                        <!-- Data -->
+                                    </div>
+
+                                    <div class="col-lg-4 col-3 mb-4 mb-lg-0 ">
+                                        <div class="">
+                                            <p class="text-start text-md-center text-success font-size">FREE
+                                                DELIVERY</p>
+                                            <!-- Price section -->
+                                                <div  class="text-start text-md-center fw-bold"> <i class="fas fa-indian-rupee-sign"></i>
+                                                   <p class="d-inline" id="productPrice"> <%=product.salePrice%> </p>
+                                                </div>
+                                            <!-- Price section-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="mt-2 mb-2" />
+                                <% } %>
+                                    <!--/single item -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+    .cartImage {
+        height: 10em;
+        width: auto;
+    }
+
+    @media all and (max-width : 400px) {
+
+        p,
+        h6 {
+            font-size: small;
+        }
+
+        .font-size {
+            font-size: small;
+        }
+
+        .cartImage {
+            height: 8em;
+            width: auto;
+        }
+    }
+</style>

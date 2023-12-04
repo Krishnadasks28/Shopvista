@@ -1,0 +1,108 @@
+<%-include('../head')-%>
+
+    <body class="bg-light">
+        <!-- navbar -->
+        <%-include('../partials/navbar')-%>
+            <!-- /navbar -->
+
+            <div class="container-fluid">
+                <div class="p-2 p-lg-5">
+                    <div class="col-12 bg-white row shadow-sm">
+                        <div class="col-lg-8 col-12 p-0 p-lg-3 mb-md-3 d-flex">
+                            <img src="/User/images/orderPlacedV2_cb4f64.png" alt="" class="success-img">
+                            <div class="p-4 mt-2">
+                                <h4 class="text-primary fw-bold mb-1">Order placed for  <i
+                                        class="fas fa-indian-rupee-sign fa-sm ms-2"></i><%=locals.totalPrice%><i
+                                        class="fas fa-exclamation fa-sm"></i> </h4>
+                                <p>Your <%=locals.itemsCount%> items will be deleivered in 2 weeks</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-4 border-start p-3 d-flex justify-content-between"
+                            id="orderdetailsdiv">
+                            <div>
+                                <h6 class="fw-bold mt-2">Why Call? Just click<i
+                                        class="fas fa-exclamation fa-sm ms-1"></i></h6>
+                                <p style="font-size: 14px;">Easily track all your Shopvista orders!</p>
+                                <a href="/user/orders/1" class="btn btn-primary mt-2 font-size">Go to My Orders</a>
+                            </div>
+                            <div>
+                                <img src="/User/images/orderBox.png" alt="" class="orderbox-img mt-4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 shadow-sm bg-white  p-0 p-lg-3 lh-lg">
+                        <div>
+                            <h5 class="fw-bold text-muted">Delivery Address</h5>
+                            <p class="fw-bold mt-3 mb-0">
+                                <%=locals.defaultAddress.name%>
+                            </p>
+                            <p>
+                                <%=locals.defaultAddress.address%>, <%=locals.defaultAddress.locality%>,
+                                        <%=locals.defaultAddress.city%>,
+                                            <%=locals.defaultAddress.state%>- <strong>
+                                                    <%=locals.defaultAddress.pincode%>
+                                                </strong>
+                            </p>
+                            <p class="mt-3 mb-1"><strong class="me-2">Phone number</strong> +91
+                                <%=defaultAddress.phone%>
+                            </p>
+                            <a href="" class="btn btn-link text-decoration-none ps-0">Change or add number</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+            <style>
+                .success-img {
+                    height: 8em;
+                }
+
+                .orderbox-img {
+                    height: 6em;
+                }
+
+
+                @media all and (max-width : 400px) {
+                    h4 {
+                        font-size: medium;
+                    }
+
+                    p,
+                    h6,
+                    h5 {
+                        font-size: small !important;
+                    }
+
+                    .font-size {
+                        font-size: small;
+                    }
+
+                    .success-img {
+                        height: 5em;
+
+                    }
+
+                    .orderbox-img {
+                        height: 4em;
+                        position: relative;
+                        top: 24px;
+                    }
+
+                }
+
+                @media all and (max-width : 900px) {
+                    #orderdetailsdiv {
+                        border-top: 1px solid thistle;
+                    }
+                }
+            </style>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                crossorigin="anonymous"></script>
+    </body>
+
+    </html>
