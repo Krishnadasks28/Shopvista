@@ -111,18 +111,18 @@ router.get('/manageReturns/:page',isAdminLoggedIn,adminController.manageReturns)
 router.post('/returnAction',isAdminLoggedIn,adminController.orderReturnAction)
 
 //banner management
-router.get('/manageBanner',adminController.loadBanners)
+router.get('/manageBanner',isAdminLoggedIn,adminController.loadBanners)
 
 //add new banner
-router.get('/addBanner',adminController.addBanner)
+router.get('/addBanner',isAdminLoggedIn,adminController.addBanner)
 
 router.post('/uploadBannerImage',upload.single('bannerImg'),adminController.uploadBannerImage)
 
 router.post('/insertBanner',upload.single('bannerImg'),adminController.insertNewBanner)
 
-router.post('/deleteBanner',adminController.deleteBanner)
+router.post('/deleteBanner',isAdminLoggedIn,adminController.deleteBanner)
 
-router.get('/editBanner',adminController.editBanner)
+router.get('/editBanner',isAdminLoggedIn,adminController.editBanner)
 
 router.post('/editBanner',upload.single('bannerImg'),adminController.updateBanner)
 

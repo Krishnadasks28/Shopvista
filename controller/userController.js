@@ -44,7 +44,7 @@ const loadHome = asyncHandler(async (req, res) => {
 
     let allBanners = await banner.find().sort({ createdAt: -1 }).limit(3);
     let activeBanners = allBanners.filter(banner => banner.status === 'Active');
-    res.render('./User/home', { title: "Shopvista", product, loggedIn, cartItems, wishlists, banners:activeBanners })
+    res.render('./User/home', { title: "Shopvista", product, loggedIn, cartItems, wishlists, banners: activeBanners })
     res.end()
 
 })
@@ -273,7 +273,7 @@ const productDetails = asyncHandler(async (req, res) => {
     ]);
 
     // similar products
-    let similarProducts = await products.find({$and:[{categoryName:product.categoryName},{_id:{$ne:product._id}}]}).sort({createdAt:-1}).limit(4)
+    let similarProducts = await products.find({ $and: [{ categoryName: product.categoryName }, { _id: { $ne: product._id } }] }).sort({ createdAt: -1 }).limit(4)
 
     let reviews = await productReview.findOne({ productId: product._id }).limit(5)
     let totalReviews
@@ -382,9 +382,10 @@ const loadCart = asyncHandler(async (req, res) => {
     let cartProducts = await cart.findOne({ user: req.session._id }).populate('items.product').exec()
 
     if (cartProducts != null) {
-        let cartItems = cartProducts.items
-        let itemsCount = cartProducts.items.length
-        let totalPrice = cartProducts.items.map((item) => item.cartPrice).reduce((accumulator, currentvalue) => accumulator + currentvalue, 0)
+        let cartItems = cartProducts.items.filter((doc) => doc.product.quantity > 0)
+        let itemsCount = cartItems.length
+        console.log("cartproducts : ", cartItems)
+        let totalPrice = cartItems.map((item) => item.cartPrice).reduce((accumulator, currentvalue) => accumulator + currentvalue, 0)
         console.log(itemsCount)
         res.render('./User/products/cart', { title: "Shopping cart || ShopVista", cartItems, totalPrice, itemsCount, loggedIn: true })
     }
@@ -527,7 +528,7 @@ const manageAddress = asyncHandler(async (req, res) => {
 
 //Add new address
 const addAddress = asyncHandler(async (req, res) => {
-    const defaultAddress = await userAddress.findOne({$and:[{ user: req.session._id },{isDefault:true}]})
+    const defaultAddress = await userAddress.findOne({ $and: [{ user: req.session._id }, { isDefault: true }] })
     let isDefault = false
     if (defaultAddress === null || defaultAddress == '') {
         isDefault = true
@@ -579,18 +580,18 @@ const editAddress = asyncHandler(async (req, res) => {
 
 
 ///remove address
-const removeAddress = asyncHandler(async(req,res)=>{
-    let allAddresses = await userAddress.findOne({user:req.session._id})
-    
+const removeAddress = asyncHandler(async (req, res) => {
+    let allAddresses = await userAddress.findOne({ user: req.session._id })
+
     let newAddresses = []
-    
-    allAddresses.addresses.forEach((doc)=>{
-        if(doc._id != req.body.addressId){
+
+    allAddresses.addresses.forEach((doc) => {
+        if (doc._id != req.body.addressId) {
             newAddresses.push(doc)
         }
     })
 
-    await userAddress.updateOne({user:req.session._id},{$set:{addresses:newAddresses}})
+    await userAddress.updateOne({ user: req.session._id }, { $set: { addresses: newAddresses } })
     res.redirect('back')
 })
 
@@ -634,15 +635,16 @@ const loadCheckout = asyncHandler(async (req, res) => {
     if (req.session.previousRoute != '/user/confirmOrder' && req.session.previousRoute != '/user/orders/1') {
         let pageParams
         let cartProducts = await cart.findOne({ user: req.session._id }).populate('items.product').exec()
-        let cartItems = cartProducts.items.map((item) => ({
+        let cartList = cartProducts.items.filter((doc) => doc.product.quantity > 0)
+        let cartItems = cartList.map((item) => ({
             product: item.product,
             cartPrice: item.cartPrice,
             quantity: item.quantity
         }))
         let walletAmount = await userWallet.findOne({ userId: req.session._id })
-        let itemsCount = cartProducts.items.length
+        let itemsCount = cartItems.length
         if (itemsCount > 0) {
-            let totalPrice = cartProducts.items.map((item) => item.cartPrice).reduce((accumulator, currentvalue) => accumulator + currentvalue, 0)
+            let totalPrice = cartItems.map((item) => item.cartPrice).reduce((accumulator, currentvalue) => accumulator + currentvalue, 0)
             //get address of the user
             let data = await userAddress.findOne({ user: req.session._id }, { _id: 0, addresses: 1 })
             let defaultAddress
@@ -671,46 +673,50 @@ const loadCheckout = asyncHandler(async (req, res) => {
 const checkOutForOne = asyncHandler(async (req, res) => {
     console.log("Previous route : ", req.session.previousRoute)
     if (req.session.previousRoute != '/user/confirmOrder' && req.session.previousRoute != '/user/orders/1') {
-        console.log("productID : ", req.query.productUniqueId)
-        let product = await products.findOne({ _id: req.query.productUniqueId })
-        let quantity = req.query.checkOutQuantity || 1
-        let totalPrice = quantity * product.salePrice
-        let productSize = req.query.checkOutSize
-        console.log("product Size: ", productSize)
-        console.log("total price: ", totalPrice)
+        let product = await products.findOne({ $and: [{ _id: req.query.productUniqueId }, { quantity: { $gt: 0 } }] })
+        if (product) {
+            console.log("productID : ", req.query.productUniqueId)
+            let quantity = req.query.checkOutQuantity || 1
+            let totalPrice = quantity * product.salePrice
+            let productSize = req.query.checkOutSize
+            console.log("product Size: ", productSize)
+            console.log("total price: ", totalPrice)
 
-        //collecting coupons
-        let allCoupons = await coupons.find({ $and: [{ usedBy: { $ne: req.session._id } }, { expiryDate: { $gt: new Date() } }, { priceLimit: { $gt: product.salePrice } }] })
-        console.log("All coupons : ", allCoupons)
-        let userData = await user.findOne({ _id: req.session._id }).populate('coupons').exec()
-        let couponIds = new Set(allCoupons.map((coupon) => coupon.couponName))
-        console.log(" coupon ids : ", couponIds)
-        userData.coupons.filter((coupon) => {
-            console.log("Coupon id : ", coupon.couponName)
-            if (!couponIds.has(coupon.couponName)) {
-                allCoupons.push(coupon)
+            //collecting coupons
+            let allCoupons = await coupons.find({ $and: [{ usedBy: { $ne: req.session._id } }, { expiryDate: { $gt: new Date() } }, { priceLimit: { $gt: product.salePrice } }] })
+            console.log("All coupons : ", allCoupons)
+            let userData = await user.findOne({ _id: req.session._id }).populate('coupons').exec()
+            let couponIds = new Set(allCoupons.map((coupon) => coupon.couponName))
+            console.log(" coupon ids : ", couponIds)
+            userData.coupons.filter((coupon) => {
+                console.log("Coupon id : ", coupon.couponName)
+                if (!couponIds.has(coupon.couponName)) {
+                    allCoupons.push(coupon)
+                }
+            })
+
+            console.log("All coupons : ", allCoupons)
+
+            let walletAmount = await userWallet.findOne({ userId: req.session._id })
+            console.log("wallet amount : ", walletAmount.balance)
+            let data = await userAddress.findOne({ user: req.session._id }, { _id: 0, addresses: 1 })
+            let defaultAddress
+            let pageParams
+            if (data != null) {
+                defaultAddress = data.addresses.find((address) => address.isDefault === true)
+                if (defaultAddress == undefined) {
+                    defaultAddress = data.addresses[0]
+                }
+                pageParams = { title: "Checkout", addresses: data.addresses, defaultAddress, product, itemsCount: quantity, totalPrice, productSize, allCoupons, walletAmount: walletAmount.balance }
+            } else {
+                pageParams = { title: "Checkout", product, itemsCount: quantity, totalPrice, productSize, allCoupons, walletAmount: walletAmount.balance }
             }
-        })
 
-        console.log("All coupons : ", allCoupons)
-
-        let walletAmount = await userWallet.findOne({ userId: req.session._id })
-        console.log("wallet amount : ", walletAmount.balance)
-        let data = await userAddress.findOne({ user: req.session._id }, { _id: 0, addresses: 1 })
-        let defaultAddress
-        let pageParams
-        if (data != null) {
-            defaultAddress = data.addresses.find((address) => address.isDefault === true)
-            if (defaultAddress == undefined) {
-                defaultAddress = data.addresses[0]
-            }
-            pageParams = { title: "Checkout", addresses: data.addresses, defaultAddress, product, itemsCount: quantity, totalPrice, productSize, allCoupons, walletAmount: walletAmount.balance }
-        } else {
-            pageParams = { title: "Checkout", product, itemsCount: quantity, totalPrice, productSize, allCoupons, walletAmount: walletAmount.balance }
+            res.render('./User/products/checkout', pageParams)
         }
-
-        res.render('./User/products/checkout', pageParams)
-        res.end()
+        else{
+            throw new Error("Error in fetching checkout.")
+        }
     }
     else {
         res.redirect('/')
@@ -984,7 +990,7 @@ const addToWallet = asyncHandler(async (req, res) => {
         date: new Date(),
         description: req.body.description,
     }
-    await userWallet.updateOne({ userId: req.session._id }, { $inc: { balance: refundAmount }, $push: { income: data },$pull:{expense:{orderId:req.body.orderId}} }, { upsert: true })
+    await userWallet.updateOne({ userId: req.session._id }, { $inc: { balance: refundAmount }, $push: { income: data }, $pull: { expense: { orderId: req.body.orderId } } }, { upsert: true })
 
     await user.updateOne({ _id: req.session._id }, { $inc: { wallet: refundAmount } })
         .then(() => {
@@ -1060,17 +1066,17 @@ const loadWallet = asyncHandler(async (req, res) => {
 
     let wallet = await userWallet.findOne({ userId: req.session._id })
 
-    let totalIncomePages = Math.ceil(wallet.income.length/perPage)
+    let totalIncomePages = Math.ceil(wallet.income.length / perPage)
     let incomeSkip = (incomePage - 1) * perPage
     let incomeLimit = incomeSkip + perPage
     let income = wallet.income.slice(incomeSkip, incomeLimit)
-    
-    let totalExpensePages = Math.ceil(wallet.expense.length/perPage)
+
+    let totalExpensePages = Math.ceil(wallet.expense.length / perPage)
     let expenseSkip = (expensePage - 1) * perPage
     let expenseLimit = expenseSkip + perPage
     let expense = wallet.expense.slice(expenseSkip, expenseLimit)
 
-    res.render('./User/wallet', { title: "My Wallet", wallet: wallet.balance, loggedIn: true, username: req.session.user, walletData: wallet, income, expense, totalExpensePages, totalIncomePages, currentIncomePage:incomePage, currentExpensePage:expensePage })
+    res.render('./User/wallet', { title: "My Wallet", wallet: wallet.balance, loggedIn: true, username: req.session.user, walletData: wallet, income, expense, totalExpensePages, totalIncomePages, currentIncomePage: incomePage, currentExpensePage: expensePage })
 })
 
 
