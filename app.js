@@ -33,7 +33,7 @@ app.use(session({
 }))
 
 app.use((req, res, next) => {
-    if (req.session) {
+    if (req.session && req.path != '/favicon.ico') {
         req.session.previousRoute = req.session.currentRoute || null;
         req.session.currentRoute = req.path
     }

@@ -15,8 +15,8 @@
                         <%wishlists.forEach((item)=> { %>
                             <div class="card shadow-sm mb-3" onclick="getProductDetails('<%=item.product._id%>')" style="cursor: pointer;">
                                 <div class="d-flex card-body">
-                                    <div class="col-lg-2 col-3 text-center">
-                                        <img src="<%=item.product.primaryImage[0].path%>" alt="" class="primaryImg">
+                                    <div class="col-lg-2 col-4 text-center">
+                                        <img src="<%=item.product.primaryImage[0].path%>" alt="" class="w-75 h-75">
                                     </div>
                                     <div class=" col-lg-9 col-7 ms-4">
                                         <h5 class=""><%=item.productName%></h5>

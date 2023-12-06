@@ -26,7 +26,7 @@ orderDetailsSchema = mongoose.Schema({
             required: false
         },
         size: {
-            type: Number,
+            type: [String,Number],
             required: false
         },
         quantity: {

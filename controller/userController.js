@@ -42,9 +42,9 @@ const loadHome = asyncHandler(async (req, res) => {
 
     }
 
-    let banners = await banner.find({status:"Active"}).sort({createdAt:-1}).limit(3)
-    console.log("Banners : ",banners)
-    res.render('./User/home', { title: "Shopvista", product, loggedIn, cartItems, wishlists, banners })
+    let allBanners = await banner.find().sort({ createdAt: -1 }).limit(3);
+    let activeBanners = allBanners.filter(banner => banner.status === 'Active');
+    res.render('./User/home', { title: "Shopvista", product, loggedIn, cartItems, wishlists, banners:activeBanners })
     res.end()
 
 })

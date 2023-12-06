@@ -27,12 +27,15 @@ const bannerSchema = mongoose.Schema({
         type:Date,
         required:true
     },
-    status:{
-        type:String,
-        default:function(){
-            return Date.now() <= this.endDate && Date.now() >= this.startDate ? 'Active':'Inactive';
-        }
-    }
 },{timestamps:true})
+
+
+bannerSchema.virtual('status').get(function () {
+    return Date.now() <= this.endDate && Date.now() >= this.startDate ? 'Active' : 'Inactive';
+});
+
+
+bannerSchema.set('toJSON', { virtuals: true });
+bannerSchema.set('toObject', { virtuals: true });
 
 module.exports = bannerSchema

@@ -18,12 +18,12 @@
                                         <!-- Single item -->
                                         <%cartItems.forEach((item)=>{%>
                                             <div class="row">
-                                                <div class="col-lg-3 col-4 mb-4 mb-lg-0">
+                                                <div class="col-lg-3 col-6 mb-4 mb-lg-0">
                                                     <!-- Image -->
                                                     <div class="bg-image hover-overlay hover-zoom ripple rounded"
                                                         data-mdb-ripple-color="light">
                                                         <img src="<%=item.product.primaryImage[0].path %>"
-                                                            class="w-100 cartImage"
+                                                            class="w-100 h-100"
                                                             alt="<%=item.product.primaryImage[0].name%>">
                                                         <a href="#!">
                                                             <div class="mask"
@@ -34,7 +34,7 @@
                                                     <!-- Image -->
                                                 </div>
 
-                                                <div class="col-lg-5 col-3 mb-4 mb-lg-0">
+                                                <div class="col-lg-5 col-6 mb-4 mb-lg-0">
                                                     <!-- Data -->
                                                     <p class="mb-2"><strong>
                                                             <%=item.productName%>
@@ -87,13 +87,13 @@
                                                     <!-- Data -->
                                                 </div>
 
-                                                <div class="col-lg-4 col-5 mb-4 mb-lg-0">
+                                                <div class="col-lg-4 col-7 mb-4 mb-lg-0">
                                                     <% if (item.quantity == item.product.quantity ) { %>
                                                         <p class="text-danger">Maximum Stock reached</p>
                                                         <% } %>
                                                         
                                                     <!-- Quantity -->
-                                                    <div class="d-flex mb-4" style="max-width: 300px">
+                                                    <div class="d-flex mb-1 mb-lg-3 mb-md-3">
                                                         <form action="/user/changeQuantity" method="post">
                                                             <input type="hidden" value="<%=item.product._id%>"
                                                                 name="quantityMinus">
